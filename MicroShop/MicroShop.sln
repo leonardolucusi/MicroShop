@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroShop.Web", "MicroShop.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroShop.ProductAPI", "MicroShop.ProductAPI\MicroShop.ProductAPI.csproj", "{261B252A-2815-4ABE-B83A-2B3EB0763379}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroShop.Order", "MicroShop.Order\MicroShop.Order.csproj", "{68DBBE53-785E-48EE-91B9-6761491440D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroShop.OrderAPI", "MicroShop.OrderAPI\MicroShop.OrderAPI.csproj", "{0F2593D1-4650-46C7-8810-578195A169E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{261B252A-2815-4ABE-B83A-2B3EB0763379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{261B252A-2815-4ABE-B83A-2B3EB0763379}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{261B252A-2815-4ABE-B83A-2B3EB0763379}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68DBBE53-785E-48EE-91B9-6761491440D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68DBBE53-785E-48EE-91B9-6761491440D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68DBBE53-785E-48EE-91B9-6761491440D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68DBBE53-785E-48EE-91B9-6761491440D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F2593D1-4650-46C7-8810-578195A169E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F2593D1-4650-46C7-8810-578195A169E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F2593D1-4650-46C7-8810-578195A169E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F2593D1-4650-46C7-8810-578195A169E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
