@@ -31,10 +31,10 @@ namespace MicroShop.ProductAPI.Application.Services
             return _mapper.Map<ProductDTO>(product);
         }
 
-        public async Task<ProductDTO> CreateProductAsync(ProductDTO productDto)
+        public async Task<ProductDTO> CreateProductAsync(CreateProductDTO createProductDto)
         {
-            var product = _mapper.Map<Product>(productDto);
-
+            var product = _mapper.Map<Product>(createProductDto);
+            product.Id = Ulid.NewUlid();
             await _productRepository.AddAsync(product);
 
             return _mapper.Map<ProductDTO>(product);
@@ -54,5 +54,6 @@ namespace MicroShop.ProductAPI.Application.Services
         {
             await _productRepository.DeleteAsync(id);
         }
+
     }
 }

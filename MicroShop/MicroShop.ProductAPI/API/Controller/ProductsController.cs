@@ -1,5 +1,4 @@
 ﻿using MicroShop.ProductAPI.Application.Interfaces;
-using MicroShop.ProductAPI.Application.Services;
 using MicroShop.ProductAPI.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,7 +55,7 @@ namespace MicroShop.ProductAPI.API.Controller
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductDTO>> CreateProduct([FromBody] ProductDTO productDto)
+        public async Task<ActionResult<CreateProductDTO>> CreateProduct([FromBody] CreateProductDTO productDto)
         {
             try
             {
@@ -66,13 +65,14 @@ namespace MicroShop.ProductAPI.API.Controller
                 }
 
                 var createdProduct = await _productService.CreateProductAsync(productDto);
-                return CreatedAtAction(nameof(GetProductById), new { id = createdProduct.Id.ToString() }, createdProduct);
+                return CreatedAtAction(nameof(GetProducts), new { id = createdProduct.Id.ToString() }, createdProduct);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(string id, [FromBody] ProductDTO productDto)
@@ -84,10 +84,12 @@ namespace MicroShop.ProductAPI.API.Controller
                     return BadRequest("Invalid product ID format.");
                 }
 
-                if (productDto == null || productDto.Id != productId)
+                if (productDto == null)
                 {
-                    return BadRequest("Product data is null or ID does not match.");
+                    return BadRequest("Product data is null.");
                 }
+
+                productDto.Id = productId;
 
                 await _productService.UpdateProductAsync(productDto);
                 return NoContent();
@@ -97,6 +99,7 @@ namespace MicroShop.ProductAPI.API.Controller
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(string id)

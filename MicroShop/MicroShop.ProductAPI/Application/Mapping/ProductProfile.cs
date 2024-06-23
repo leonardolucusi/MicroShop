@@ -9,6 +9,7 @@ namespace MicroShop.ProductAPI.Application.Mapping
         public ProductProfile()
         {
             CreateMap<Product, ProductDTO>().ReverseMap();
+            CreateMap<Product, CreateProductDTO>().ReverseMap();
         }
     }
 }
