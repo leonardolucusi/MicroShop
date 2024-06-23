@@ -1,4 +1,12 @@
+using System.Net.Http.Headers;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpClient("ProductAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7037");
+    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+});
 
 builder.Services.AddControllersWithViews();
 
