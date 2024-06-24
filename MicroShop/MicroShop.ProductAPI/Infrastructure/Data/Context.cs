@@ -1,6 +1,7 @@
 ﻿using MicroShop.ProductAPI.Domain.Entities;
 using MicroShop.ProductAPI.Infrastructure.Mappings;
 using Microsoft.EntityFrameworkCore;
+
 namespace MicroShop.ProductAPI.Infrastructure.Data
 {
     public class Context : DbContext

@@ -1,4 +1,6 @@
-﻿using MicroShop.Web.Application.Mapping;
+﻿using MicroShop.Web.Application;
+using MicroShop.Web.Application.Mapping;
+using MicroShop.Web.Application.Services;
 using MicroShop.Web.Domain.Interfaces;
 using MicroShop.Web.Infrastructure.Data;
 using MicroShop.Web.Infrastructure.Repositories;
@@ -15,6 +17,7 @@ namespace MicroShop.Web.Infrastructure.IoC
         {
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddDbContext<Context>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")

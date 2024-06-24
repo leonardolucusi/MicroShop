@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MicroShop.Web.Controllers
 {
- 
     public class ProductsController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -12,7 +11,7 @@ namespace MicroShop.Web.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("ProductAPI");
         }
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Index()
         {
             HttpResponseMessage response = await _httpClient.GetAsync("api/products");

@@ -9,12 +9,12 @@ using System.Text;
 
 namespace MicroShop.Web.Application.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
-        private readonly Mapper _mapper;
-        public UserService(IUserRepository userRepository, IConfiguration configuration, Mapper mapper)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
             _configuration = configuration;
@@ -31,13 +31,14 @@ namespace MicroShop.Web.Application.Services
             var user = await _userRepository.FindUserByUsernameAsync(loginDto.Username);
             if (user == null || user.Password != loginDto.Password)
             {
-                return null; 
+                return null;
             }
             var token = GenerateJwtToken(user);
             return token;
         }
         private string GenerateJwtToken(User user)
         {
+            if (user.Username == null) return null;
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
 
@@ -46,9 +47,9 @@ namespace MicroShop.Web.Application.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim(ClaimTypes.Name, user.Username) 
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(15), 
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
