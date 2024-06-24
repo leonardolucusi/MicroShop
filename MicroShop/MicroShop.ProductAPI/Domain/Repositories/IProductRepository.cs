@@ -3,7 +3,7 @@ namespace MicroShop.ProductAPI.Domain.Repositories
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllAsync();
+        Task<IQueryable<Product>> GetAllAsync();
         Task<Product> GetByIdAsync(Ulid id);
         Task AddAsync(Product product);
         Task UpdateAsync(Product product);

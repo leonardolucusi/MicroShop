@@ -1,15 +1,14 @@
 ﻿using MicroShop.ProductAPI.Domain.Entities;
 using MicroShop.ProductAPI.Domain.Repositories;
 using MicroShop.ProductAPI.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 namespace MicroShop.ProductAPI.Infrastructure.Repositories
 {
     public class ProductRepository(Context context) : IProductRepository
     {
         private readonly Context _context = context;
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<IQueryable<Product>> GetAllAsync()
         {
-            return await _context.Products.ToListAsync();
+            return await Task.Run(() => _context.Products);
         }
         public async Task<Product> GetByIdAsync(Ulid id)
         {
