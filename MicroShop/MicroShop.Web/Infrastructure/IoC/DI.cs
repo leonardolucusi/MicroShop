@@ -18,7 +18,7 @@ namespace MicroShop.Web.Infrastructure.IoC
             services.AddAutoMapper(typeof(UserProfile).Assembly);
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
-
+            services.AddHttpContextAccessor();
             services.AddHttpClient("ProductAPI", client =>
             {
                 client.BaseAddress = new Uri("https://localhost:7037");

@@ -1,6 +1,7 @@
 ﻿using MicroShop.Web.Application;
 using MicroShop.Web.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace MicroShop.Web.Controllers
 {
@@ -57,6 +58,13 @@ namespace MicroShop.Web.Controllers
                 Secure = true,
             });
 
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("jwt");
             return RedirectToAction("Index", "Home");
         }
     }

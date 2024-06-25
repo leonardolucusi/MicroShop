@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,6 +36,14 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="LoginPage">Login</a>
+                        </li>
+                        <li class="nav-item">
+                        @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                             {
+                                 <form asp-area="" asp-controller="Users" asp-action="Logout" method="post" style="display:inline;">
+                                     <button type="submit" class="btn btn-link nav-link text-dark" style="padding: 0; border: none; background: none;">Logout</button>
+                                 </form>
+                             }
                         </li>
                     </ul>
                 </div>
