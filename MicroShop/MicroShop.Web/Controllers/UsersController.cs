@@ -41,10 +41,7 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(loginDto);
-            }
+            if (!ModelState.IsValid) return View(loginDto);
 
             var token = await _userService.AuthenticateAsync(loginDto);
 
@@ -62,6 +59,5 @@ namespace MicroShop.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
     }
 }

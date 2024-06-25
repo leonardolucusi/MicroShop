@@ -1,6 +1,7 @@
 ﻿using MicroShop.Web.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace MicroShop.Web.Controllers
 {
@@ -11,9 +12,15 @@ namespace MicroShop.Web.Controllers
         {
             _httpClient = httpClientFactory.CreateClient("ProductAPI");
         }
-        //[Authorize]
+
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
+            //var jwtToken = Request.Cookies["jwt"];
+            //if (string.IsNullOrEmpty(jwtToken)) return RedirectToAction("Login");
+            //_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             HttpResponseMessage response = await _httpClient.GetAsync("api/products");
 
             if (response.IsSuccessStatusCode)
