@@ -17,7 +17,6 @@ namespace MicroShop.Web.Application.Services
             var response = await _httpClient.GetAsync($"{BasePath}/{id}");
             return await response.Content.ReadFromJsonAsync<ProductDTO>();
         }
-
         public async Task<ProductDTO> UpdateProduct(ProductDTO productDTO)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/products/{productDTO.Id}", productDTO);
@@ -27,7 +26,12 @@ namespace MicroShop.Web.Application.Services
             }
             else throw new Exception("Something went wrong when calling API");
         }
-
+        public async Task<bool> DeleteProductAsync(string id) 
+        {
+            var response = await _httpClient.DeleteAsync($"api/products/{id}");
+            if (response.IsSuccessStatusCode)
+                return true;
+            else throw new Exception("Something went wrong when calling API");
+        }
     }
 }
-

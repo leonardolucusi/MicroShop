@@ -1,5 +1,4 @@
-﻿using Azure;
-using MicroShop.Web.Application.Interface;
+﻿using MicroShop.Web.Application.Interface;
 using MicroShop.Web.Domain.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,13 +40,25 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductDTO productDto)
         {
-            if(ModelState.IsValid) 
+            if(ModelState.IsValid)
             {
                 var response = await _productService.UpdateProduct(productDto);
                 if (response != null) return RedirectToAction(
                     nameof(Index));
             }
             return View(productDto);
+        }
+        public async Task<IActionResult> ProductDeletePage(string id)
+        {
+            var product = await _productService.GetProductById(id); 
+            return View(product);
+        }
+        [HttpPost]
+        public async Task<ActionResult> ProductDelete(string id)
+        {
+            var response = await _productService.DeleteProductAsync(id);
+            if(response) return RedirectToAction(nameof(Index));
+            return View(response);
         }
     }
 }

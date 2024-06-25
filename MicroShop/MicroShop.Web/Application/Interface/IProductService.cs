@@ -6,5 +6,6 @@ namespace MicroShop.Web.Application.Interface
     {
         public Task<ProductDTO> GetProductById(string id);
         public Task<ProductDTO> UpdateProduct(ProductDTO productDTO);
+        public Task<bool> DeleteProductAsync(string id);
     }
 }
