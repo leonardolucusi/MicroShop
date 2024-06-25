@@ -1,8 +1,7 @@
-﻿namespace MicroShop.Web.Models.DTOs
+﻿namespace MicroShop.Web.Domain.DTOs.ProductDTOs
 {
-    public class ProductDTO
+    public class UpdateProductDTO
     {
-        public string? Id { get; set; }
         public string? Name { get; set; }
         public decimal? Price { get; set; }
         public int? Stock { get; set; }

@@ -1,4 +1,4 @@
-﻿using MicroShop.Web.Domain.DTOs;
+﻿using MicroShop.Web.Domain.DTOs.UserDTOs;
 
 namespace MicroShop.Web.Application
 {

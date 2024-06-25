@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MicroShop.Web.Domain.DTOs;
+using MicroShop.Web.Domain.DTOs.UserDTOs;
 using MicroShop.Web.Domain.Entities;
 using MicroShop.Web.Domain.Interfaces;
 using Microsoft.IdentityModel.Tokens;
@@ -48,7 +48,7 @@ namespace MicroShop.Web.Application.Services
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username),
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(10),
+                Expires = DateTime.UtcNow.AddMinutes(50),
                 Audience = _configuration["Jwt:Audience"],
                 Issuer = _configuration["Jwt:Issuer"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

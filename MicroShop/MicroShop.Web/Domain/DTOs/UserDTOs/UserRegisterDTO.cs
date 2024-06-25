@@ -1,4 +1,4 @@
-﻿namespace MicroShop.Web.Domain.DTOs
+﻿namespace MicroShop.Web.Domain.DTOs.UserDTOs
 {
     public class UserRegisterDTO
     {

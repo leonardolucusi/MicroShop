@@ -1,4 +1,4 @@
-﻿@using MicroShop.Web.Models.DTOs
+﻿@using MicroShop.Web.Domain.DTOs.ProductDTOs
 @model List<ProductDTO>
 
 <h1>Lista de Produtos</h1>
@@ -22,6 +22,14 @@
                     <td>@product.Name</td>
                     <td>@product.Price</td>
                     <td>@product.Stock</td>
+                    <td>
+                        <a asp-action="ProductUpdatePage" class=" btn btn-success" asp-route-id="@product.Id">
+                            <i class="fas fa-edit">Edit</i>
+                        </a>
+                        <a asp-action="ProductDeletePage" class=" btn btn-danger" asp-route-id="@product.Id">
+                            <i class="fas fa-trash">Delete</i>
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>

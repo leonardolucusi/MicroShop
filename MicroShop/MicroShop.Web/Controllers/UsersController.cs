@@ -1,7 +1,6 @@
 ﻿using MicroShop.Web.Application;
-using MicroShop.Web.Domain.DTOs;
+using MicroShop.Web.Domain.DTOs.UserDTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace MicroShop.Web.Controllers
 {

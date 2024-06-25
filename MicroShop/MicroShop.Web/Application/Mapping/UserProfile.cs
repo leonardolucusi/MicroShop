@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MicroShop.Web.Domain.DTOs;
+using MicroShop.Web.Domain.DTOs.UserDTOs;
 using MicroShop.Web.Domain.Entities;
 
 namespace MicroShop.Web.Application.Mapping
