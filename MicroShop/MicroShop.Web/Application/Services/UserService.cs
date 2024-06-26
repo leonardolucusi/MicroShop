@@ -45,8 +45,8 @@ namespace MicroShop.Web.Application.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Username),
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(50),
                 Audience = _configuration["Jwt:Audience"],
@@ -56,6 +56,12 @@ namespace MicroShop.Web.Application.Services
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            var user = await _userRepository.FindUserByIdAsync(id);
+            return user;
         }
 
     }

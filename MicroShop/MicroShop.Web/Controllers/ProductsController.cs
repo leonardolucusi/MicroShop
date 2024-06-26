@@ -2,7 +2,6 @@
 using MicroShop.Web.Domain.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Headers;
 
 namespace MicroShop.Web.Controllers
 {
@@ -15,14 +14,9 @@ namespace MicroShop.Web.Controllers
             _httpClient = httpClientFactory.CreateClient("ProductAPI");
             _productService = productService;
         }
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var jwtToken = Request.Cookies["jwt"];
-            if (string.IsNullOrEmpty(jwtToken)) return RedirectToAction("Login");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
-
             HttpResponseMessage response = await _httpClient.GetAsync("api/products");
 
             if (response.IsSuccessStatusCode)
@@ -32,15 +26,35 @@ namespace MicroShop.Web.Controllers
             }
             return View("Error");
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult ProductCreatePage()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ProductCreate(ProductDTO productDto)
+        {
+            if (ModelState.IsValid)
+            {
+                await _productService.CreateProduct(productDto);
+                return RedirectToAction("Index");
+            }
+            return View(productDto);
+        }
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> ProductUpdatePage(string id)
         {
             var product = await _productService.GetProductById(id);
             return View(product);
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductDTO productDto)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var response = await _productService.UpdateProduct(productDto);
                 if (response != null) return RedirectToAction(
@@ -48,16 +62,20 @@ namespace MicroShop.Web.Controllers
             }
             return View(productDto);
         }
+        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> ProductDeletePage(string id)
         {
-            var product = await _productService.GetProductById(id); 
+            var product = await _productService.GetProductById(id);
             return View(product);
+
         }
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> ProductDelete(string id)
         {
             var response = await _productService.DeleteProductAsync(id);
-            if(response) return RedirectToAction(nameof(Index));
+            if (response) return RedirectToAction(nameof(Index));
             return View(response);
         }
     }

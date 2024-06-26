@@ -19,6 +19,11 @@ namespace MicroShop.Web.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<User> FindUserByIdAsync(int id)
+        {
+            return await _context.Users.FindAsync(id);
+        }
+
         public async Task<User> FindUserByUsernameAsync(string userName)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == userName);
