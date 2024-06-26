@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 namespace MicroShop.Web.Application.Services
 {
     public class UserService : IUserService
@@ -23,7 +22,7 @@ namespace MicroShop.Web.Application.Services
         public async Task<string> RegisterUserAsync(UserRegisterDTO registerDto)
         {
             var user = _mapper.Map<User>(registerDto);
-            await _userRepository.AddUserAsync(user);
+            await _userRepository.UserAddAsync(user);
             return "Ok User Created";
         }
         public async Task<string> AuthenticateAsync(UserLoginDTO loginDto)
@@ -57,12 +56,15 @@ namespace MicroShop.Web.Application.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
         public async Task<User> GetUserById(int id)
         {
             var user = await _userRepository.FindUserByIdAsync(id);
             return user;
         }
-
+        public async Task<User> UpdateUserAsync(User user) 
+        {
+            await _userRepository.UserUpdateAsync(user);
+            return user;
+        }
     }
 }

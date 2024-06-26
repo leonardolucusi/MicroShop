@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
 namespace MicroShop.Web.Controllers
 {
     public class UsersController : Controller
@@ -20,7 +19,6 @@ namespace MicroShop.Web.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO registerDto)
         {
@@ -36,34 +34,27 @@ namespace MicroShop.Web.Controllers
             }
             return RedirectToAction("LoginPage");
         }
-
         public IActionResult LoginPage()
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
         {
             if (!ModelState.IsValid) return View(loginDto);
-
             var token = await _userService.AuthenticateAsync(loginDto);
-
             if (token == null)
             {
                 ModelState.AddModelError("", "Invalid username or password.");
                 return View(loginDto);
             }
-
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
             });
-
             return RedirectToAction("Index", "Home");
         }
-
         [HttpPost]
         public IActionResult Logout()
         {
@@ -88,6 +79,17 @@ namespace MicroShop.Web.Controllers
                 return userId;
             }
             return userId;
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UserEdit(User user)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(user);
+            if (updatedUser != null)
+            {
+                return RedirectToAction("UserEditPage", "Users");
+            }
+            return View(user);
         }
     }
 }

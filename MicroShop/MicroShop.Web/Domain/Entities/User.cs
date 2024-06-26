@@ -1,5 +1,4 @@
 ﻿using MicroShop.Web.Domain.Interfaces;
-
 namespace MicroShop.Web.Domain.Entities
 {
     public class User : IEntity
