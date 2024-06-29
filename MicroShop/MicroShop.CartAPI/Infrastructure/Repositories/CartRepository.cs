@@ -3,6 +3,7 @@ using MicroShop.CartAPI.Domain.Entities;
 using MicroShop.CartAPI.Domain.Repositories;
 using MicroShop.CartAPI.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+
 namespace MicroShop.CartAPI.Infrastructure.Repositories
 {
     public class CartRepository : ICartRepository
@@ -12,34 +13,34 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
         {
             _context = context;
         }
-
         public async Task<Cart> AddCart(Cart cart)
         {
             await _context.Carts.AddAsync(cart);
             await _context.SaveChangesAsync();
             return cart;
         }
-
         public async Task<CartItem> AddCartItemToCart(CartItem cartItem)
         {
             await _context.CartItems.AddAsync(cartItem);
             await _context.SaveChangesAsync();
             return cartItem;
         }
-
         public async Task<bool> CheckIfCartHasCartItemProduct(int cartId, string productId)
         {
             return await _context.CartItems.AnyAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
         }
-
         public async Task<Cart> CheckIfUserHasCart(int userId)
         {
             return await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
         }
-
         public Task<Cart> FindCartByUserId(int userId)
         {
             return _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId); ;
+        }
+
+        public async Task<IEnumerable<CartItem>> GetAllCartItems(int cartId)
+        {
+            return await _context.CartItems.Where(ci => ci.CartId == cartId).ToListAsync();
         }
 
         public async Task<bool> RemoveCartItemProduct(int cartId, string productId)
@@ -54,7 +55,6 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
             }
             return false;
         }
-
         public async Task<CartItem> UpdateQuantity(UpdateProductQuantityInCartItemDTO updateDto)
         {
             var cartItem = await _context.CartItems.FirstOrDefaultAsync(ci => ci.CartId == updateDto.CartId && ci.ProductId == updateDto.ProductId);

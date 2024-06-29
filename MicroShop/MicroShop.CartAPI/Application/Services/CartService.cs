@@ -3,6 +3,7 @@ using MicroShop.CartAPI.Domain.DTOs;
 using MicroShop.CartAPI.Domain.Entities;
 using MicroShop.CartAPI.Domain.Repositories;
 using Microsoft.AspNetCore.Authorization;
+
 namespace MicroShop.CartAPI.Application.Services
 {
     public class CartService : ICartService
@@ -40,6 +41,11 @@ namespace MicroShop.CartAPI.Application.Services
                 Quantity = 1
             });
             return newCart;
+        }
+
+        public async Task<IEnumerable<CartItem>> GetAllCartItems(int cartId)
+        {
+            return await _cartRepository.GetAllCartItems(cartId);
         }
 
         public async Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO)
