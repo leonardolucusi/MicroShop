@@ -4,13 +4,14 @@ using MicroShop.CartAPI.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 namespace MicroShop.CartAPI.Presentation.Controller
 {
-    [Route("api/v1/[controller]")]
+
     [ApiController]
-    public class CartController : ControllerBase
+    [Route("api/v1/carts")]
+    public class CartsController : ControllerBase
     {
         private readonly ICartService _cartService;
         private readonly IMapper _mapper;
-        public CartController(ICartService cartService, IMapper mapper)
+        public CartsController(ICartService cartService, IMapper mapper)
         {
             _cartService = cartService;
             _mapper = mapper;
@@ -34,8 +35,7 @@ namespace MicroShop.CartAPI.Presentation.Controller
         [HttpGet("{cartId}/cartItems")]
         public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetAllCartItemsInCart(int cartId)
         {
-            var cartItems = await _cartService.GetAllCartItems(cartId);
-            return Ok(cartItems);
+            return Ok(await _cartService.GetAllCartItems(cartId));
         }
     }
 }

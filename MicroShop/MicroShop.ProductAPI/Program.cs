@@ -2,7 +2,7 @@ using MicroShop.ProductAPI.Infrastructure.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDependecyInjection(builder.Configuration);
+builder.Services.AddDependencyInjection(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

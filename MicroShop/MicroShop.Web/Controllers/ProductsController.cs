@@ -2,23 +2,24 @@
 using MicroShop.Web.Domain.DTOs.ProductDTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace MicroShop.Web.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _productApiClient;
+        
         private readonly IProductService _productService;
         public ProductsController(IHttpClientFactory httpClientFactory, IProductService productService)
         {
-            _httpClient = httpClientFactory.CreateClient("ProductAPI");
+            _productApiClient = httpClientFactory.CreateClient("ProductAPI");
             _productService = productService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            HttpResponseMessage response = await _httpClient.GetAsync("api/products");
-
+            HttpResponseMessage response = await _productApiClient.GetAsync("api/products");
+        
             if (response.IsSuccessStatusCode)
             {
                 List<ProductDTO> products = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
@@ -26,6 +27,7 @@ namespace MicroShop.Web.Controllers
             }
             return View("Error");
         }
+
         [Authorize]
         [HttpGet]
         public IActionResult ProductCreatePage()

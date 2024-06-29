@@ -15,6 +15,7 @@ namespace MicroShop.Web.Infrastructure.IoC
         public static void AddDependecyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(typeof(UserProfile).Assembly);
+            services.AddScoped<ICartService, CartService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductService, ProductService>();

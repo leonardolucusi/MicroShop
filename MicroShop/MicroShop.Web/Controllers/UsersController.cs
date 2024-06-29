@@ -1,6 +1,7 @@
 ﻿using MicroShop.Web.Application;
 using MicroShop.Web.Domain.DTOs.UserDTOs;
 using MicroShop.Web.Domain.Entities;
+using MicroShop.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,6 +20,7 @@ namespace MicroShop.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO registerDto)
         {
@@ -65,20 +67,7 @@ namespace MicroShop.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<User>> UserEditPage()
         {
-            return View(await _userService.GetUserById(GetUserIdFromToken(Request.Cookies["jwt"])));
-        }
-        private int GetUserIdFromToken(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-            handler.InboundClaimTypeMap.Clear();
-            handler.InboundClaimTypeMap.Add(ClaimTypes.NameIdentifier, "nameid");
-            var jwtToken = handler.ReadJwtToken(token);
-            var userIdString = jwtToken.Claims.First(claim => claim.Type == "nameid").Value;
-            if (int.TryParse(userIdString, out int userId))
-            {
-                return userId;
-            }
-            return userId;
+            return View(await _userService.GetUserById(GetUserIdFromJWT.GetUserIdFromToken(Request.Cookies["jwt"])));
         }
         [Authorize]
         [HttpPost]

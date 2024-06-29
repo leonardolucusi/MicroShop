@@ -31,6 +31,9 @@
                         <a asp-action="ProductDeletePage" class="btn btn-danger" asp-route-id="@product.Id">
                             <i class="fas fa-trash">Delete</i>
                         </a>
+                        <a asp-action="AddProductToCart" asp-controller="Carts" class="btn btn-success" asp-route-id="@product.Id">
+                            <i class="fas fa-edit">Add To Cart</i>
+                        </a>
                     </td>
                 </tr>
             }

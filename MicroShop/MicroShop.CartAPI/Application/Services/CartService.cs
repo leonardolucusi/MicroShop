@@ -1,4 +1,5 @@
-﻿using MicroShop.CartAPI.Application.Interfaces;
+﻿using AutoMapper;
+using MicroShop.CartAPI.Application.Interfaces;
 using MicroShop.CartAPI.Domain.DTOs;
 using MicroShop.CartAPI.Domain.Entities;
 using MicroShop.CartAPI.Domain.Repositories;
@@ -9,9 +10,11 @@ namespace MicroShop.CartAPI.Application.Services
     public class CartService : ICartService
     {
         private readonly ICartRepository _cartRepository;
-        public CartService(ICartRepository cartRepository)
+        private readonly IMapper _mapper;
+        public CartService(ICartRepository cartRepository, IMapper mapper)
         {
             _cartRepository = cartRepository;
+            _mapper = mapper;
         }
         [Authorize]
         public async Task<Cart> AddOrRemoveProductToCartAsync(int userId, string productId)
@@ -43,9 +46,10 @@ namespace MicroShop.CartAPI.Application.Services
             return newCart;
         }
 
-        public async Task<IEnumerable<CartItem>> GetAllCartItems(int cartId)
+        public async Task<IEnumerable<CartItemDTO>> GetAllCartItems(int cartId)
         {
-            return await _cartRepository.GetAllCartItems(cartId);
+            var cartItemsDto = await _cartRepository.GetAllCartItems(cartId);
+            return _mapper.Map<IEnumerable<CartItemDTO>>(cartItemsDto);
         }
 
         public async Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO)

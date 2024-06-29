@@ -7,6 +7,6 @@ namespace MicroShop.CartAPI.Application.Interfaces
     {
         public Task<Cart> AddOrRemoveProductToCartAsync(int userId, string productId);
         public Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO);
-        public Task<IEnumerable<CartItem>> GetAllCartItems(int cartId);
+        public Task<IEnumerable<CartItemDTO>> GetAllCartItems(int cartId);
     }
 }

@@ -10,7 +10,7 @@ namespace MicroShop.ProductAPI.Infrastructure.IoC
 {
     public static class DI
     {
-        public static void AddDependecyInjection(this IServiceCollection services, IConfiguration configuration)
+        public static void AddDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAutoMapper(typeof(ProductProfile).Assembly);
 
