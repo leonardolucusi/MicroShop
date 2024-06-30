@@ -4,6 +4,6 @@ namespace MicroShop.Web.Application.Interface
 {
     public interface ICartService
     {
-        public Task<AddProductToCartDTO> AddProductToCart(AddProductToCartDTO addProductToCartDTO);
+        public Task<bool> AddProductToCart(AddProductToCartDTO addProductToCartDTO);
     }
 }

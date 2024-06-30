@@ -12,14 +12,17 @@ namespace MicroShop.Web.Application.Services
         {
             _httpClient = httpClientFactory.CreateClient("CartAPI");
         }
-        public async Task<AddProductToCartDTO> AddProductToCart(AddProductToCartDTO addProductToCartDTO)
+        public async Task<bool> AddProductToCart(AddProductToCartDTO addProductToCartDTO)
         {
             var response = await _httpClient.PostAsJsonAsync($"api/v1/carts", addProductToCartDTO);
+
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<AddProductToCartDTO>();
+                var result = await response.Content.ReadAsStringAsync();
+                return bool.Parse(result);
             }
-            else throw new Exception("Something went wrong when calling API");
+
+            return false;
         }
     }
 }

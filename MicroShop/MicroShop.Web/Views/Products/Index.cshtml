@@ -1,6 +1,19 @@
 ﻿@using MicroShop.Web.Domain.DTOs.ProductDTOs
 @model List<ProductDTO>
 
+@{
+    var userMessage = TempData["UserMessage"] as string;
+    var messageType = TempData["MessageType"] as string;
+    var alertClass = messageType == "success" ? "alert-success" : "alert-danger";
+}
+
+@if (!string.IsNullOrEmpty(userMessage))
+{
+    <div class="alert @alertClass">
+        @userMessage
+    </div>
+}
+
 <h1>Lista de Produtos</h1>
 
 <a asp-action="ProductCreatePage" class="btn btn-primary mb-3">Criar Produto</a>
@@ -14,11 +27,15 @@
                 <th>Nome</th>
                 <th>Preço</th>
                 <th>Estoque</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var product in Model)
             {
+                var productState = TempData.Peek($"Product_{product.Id}") as string;
+                var buttonText = productState == "added" ? "Remove from Cart" : "Add To Cart";
+                var buttonClass = productState == "added" ? "btn-danger" : "btn-success";
                 <tr>
                     <td>@product.Id</td>
                     <td>@product.Name</td>
@@ -31,9 +48,12 @@
                         <a asp-action="ProductDeletePage" class="btn btn-danger" asp-route-id="@product.Id">
                             <i class="fas fa-trash">Delete</i>
                         </a>
-                        <a asp-action="AddProductToCart" asp-controller="Carts" class="btn btn-success" asp-route-id="@product.Id">
-                            <i class="fas fa-edit">Add To Cart</i>
-                        </a>
+                        <form asp-action="AddProductToCart" asp-controller="Carts" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn @buttonClass">
+                                <i class="fas fa-edit"></i> @buttonText
+                            </button>
+                        </form>
                     </td>
                 </tr>
             }

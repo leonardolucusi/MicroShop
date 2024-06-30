@@ -4,7 +4,6 @@ using MicroShop.CartAPI.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
 namespace MicroShop.CartAPI.Presentation.Controller
 {
-
     [ApiController]
     [Route("api/v1/carts")]
     public class CartsController : ControllerBase
@@ -21,8 +20,8 @@ namespace MicroShop.CartAPI.Presentation.Controller
         public async Task<IActionResult> AddOrRemoveProductToCart([FromBody] AddProductToCartDTO addProductToCartDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            await _cartService.AddOrRemoveProductToCartAsync(addProductToCartDTO.userId, addProductToCartDTO.productId);
-            return Ok();
+            var productAddedOrRemoved = await _cartService.AddOrRemoveProductToCartAsync(addProductToCartDTO.userId, addProductToCartDTO.productId);
+            return Ok(productAddedOrRemoved);
         }
 
         [HttpPut]

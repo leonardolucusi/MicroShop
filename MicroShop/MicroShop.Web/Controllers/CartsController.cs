@@ -16,8 +16,24 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddProductToCart(string productId)
         {
-            await _cartService.AddProductToCart(new AddProductToCartDTO { ProductId = productId, UserId = GetUserIdFromJWT.GetUserIdFromToken(Request.Cookies["jwt"])});
-            return RedirectToAction("Index", "Product");
+            var userId = GetUserIdFromJWT.GetUserIdFromToken(Request.Cookies["jwt"]);
+
+            var added = await _cartService.AddProductToCart(new AddProductToCartDTO { ProductId = productId, UserId = userId });
+
+            if (added)
+            {
+                TempData[$"Product_{productId}"] = "added";
+                TempData["UserMessage"] = "Product added to cart successfully!";
+                TempData["MessageType"] = "success";
+            }
+            else
+            {
+                TempData[$"Product_{productId}"] = "removed";
+                TempData["UserMessage"] = "Product removed from cart.";
+                TempData["MessageType"] = "danger";
+            }
+
+            return RedirectToAction("Index", "Products");
         }
     }
 }

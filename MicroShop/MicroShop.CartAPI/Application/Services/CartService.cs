@@ -16,16 +16,16 @@ namespace MicroShop.CartAPI.Application.Services
             _cartRepository = cartRepository;
             _mapper = mapper;
         }
-        [Authorize]
-        public async Task<Cart> AddOrRemoveProductToCartAsync(int userId, string productId)
+
+        public async Task<bool> AddOrRemoveProductToCartAsync(int userId, string productId)
         {
             var cartExist = await _cartRepository.FindCartByUserId(userId);
             if (cartExist is not null)
             {
-                if (await _cartRepository.CheckIfCartHasCartItemProduct(cartExist.Id, productId) == true)
+                if (await _cartRepository.CheckIfCartHasCartItemProduct(cartExist.Id, productId) is true)
                 {
                     await _cartRepository.RemoveCartItemProduct(cartExist.Id, productId);
-                    return cartExist;
+                    return false;
                 };
 
                 await _cartRepository.AddCartItemToCart(new CartItem
@@ -34,7 +34,7 @@ namespace MicroShop.CartAPI.Application.Services
                     ProductId = productId,
                     Quantity = 1
                 });
-                return cartExist;
+                return true;
             }
             var newCart = await _cartRepository.AddCart(new Cart { UserId = userId });
             await _cartRepository.AddCartItemToCart(new CartItem
@@ -43,7 +43,7 @@ namespace MicroShop.CartAPI.Application.Services
                 ProductId = productId,
                 Quantity = 1
             });
-            return newCart;
+            return true;
         }
 
         public async Task<IEnumerable<CartItemDTO>> GetAllCartItems(int cartId)

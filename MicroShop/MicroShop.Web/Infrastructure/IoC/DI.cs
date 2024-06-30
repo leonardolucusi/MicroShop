@@ -25,6 +25,11 @@ namespace MicroShop.Web.Infrastructure.IoC
                 client.BaseAddress = new Uri("https://localhost:7037");
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             });
+            services.AddHttpClient("CartAPI", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:7221");
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            });
 
             services.AddDbContext<Context>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")

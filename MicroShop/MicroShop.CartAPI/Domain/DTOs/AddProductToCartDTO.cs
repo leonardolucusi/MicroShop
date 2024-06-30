@@ -2,7 +2,7 @@
 {
     public class AddProductToCartDTO
     {
-        public int userId { get; set; }
-        public string? productId { get; set; }
+        public int UserId { get; set; }
+        public string? ProductId { get; set; }
     }
 }

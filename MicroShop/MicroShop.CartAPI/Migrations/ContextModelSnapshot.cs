@@ -34,7 +34,7 @@ namespace MicroShop.CartAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("MicroShop.CartAPI.Domain.Entities.CartItem", b =>
@@ -58,7 +58,7 @@ namespace MicroShop.CartAPI.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("MicroShop.CartAPI.Domain.Entities.CartItem", b =>
