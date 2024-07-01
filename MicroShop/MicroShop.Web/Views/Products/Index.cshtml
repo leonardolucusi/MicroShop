@@ -14,9 +14,9 @@
     </div>
 }
 
-<h1>Lista de Produtos</h1>
+<h1>Product List</h1>
 
-<a asp-action="ProductCreatePage" class="btn btn-primary mb-3">Criar Produto</a>
+<a asp-action="ProductCreatePage" class="btn btn-primary mb-3">Create Product</a>
 
 @if (Model != null && Model.Count > 0)
 {
@@ -24,18 +24,17 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Estoque</th>
-                <th>Ações</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var product in Model)
             {
-                var productState = TempData.Peek($"Product_{product.Id}") as string;
-                var buttonText = productState == "added" ? "Remove from Cart" : "Add To Cart";
-                var buttonClass = productState == "added" ? "btn-danger" : "btn-success";
+                var buttonText = product.IsInCart ? "Remove from Cart" : "Add to Cart";
+                var buttonClass = product.IsInCart ? "btn-danger" : "btn-success";
                 <tr>
                     <td>@product.Id</td>
                     <td>@product.Name</td>
@@ -62,5 +61,5 @@
 }
 else
 {
-    <p>Nenhum produto encontrado.</p>
+    <p>No products found.</p>
 }

@@ -13,40 +13,23 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<Cart> AddCart(Cart cart)
+        public async Task<IEnumerable<CartItem>> GetAllCartItems(int userId)
         {
-            await _context.Carts.AddAsync(cart);
-            await _context.SaveChangesAsync();
-            return cart;
+            return await _context.CartItems.Where(ci => ci.UserId == userId).ToListAsync();
         }
-        public async Task<CartItem> AddCartItemToCart(CartItem cartItem)
+        public async Task AddCartItem(CartItem cartItem)
         {
             await _context.CartItems.AddAsync(cartItem);
             await _context.SaveChangesAsync();
-            return cartItem;
         }
-        public async Task<bool> CheckIfCartHasCartItemProduct(int cartId, string productId)
+        public async Task<bool> CheckIfUserHasCartItemProduct(int userId, string productId)
         {
-            return await _context.CartItems.AnyAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+            return await _context.CartItems.AnyAsync(ci => ci.UserId == userId && ci.ProductId == productId);
         }
-        public async Task<Cart> CheckIfUserHasCart(int userId)
-        {
-            return await _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId);
-        }
-        public Task<Cart> FindCartByUserId(int userId)
-        {
-            return _context.Carts.FirstOrDefaultAsync(c => c.UserId == userId); ;
-        }
-
-        public async Task<IEnumerable<CartItem>> GetAllCartItems(int cartId)
-        {
-            return await _context.CartItems.Where(ci => ci.CartId == cartId).ToListAsync();
-        }
-
-        public async Task<bool> RemoveCartItemProduct(int cartId, string productId)
+        public async Task<bool> RemoveCartItemProduct(int userId, string productId)
         {
             var cartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == productId);
+                .FirstOrDefaultAsync(ci => ci.UserId == userId && ci.ProductId == productId);
             if (cartItem != null)
             {
                 _context.CartItems.Remove(cartItem);
@@ -55,9 +38,9 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
             }
             return false;
         }
-        public async Task<CartItem> UpdateQuantity(UpdateProductQuantityInCartItemDTO updateDto)
+        public async Task<CartItem> UpdateCartItemQuantity(UpdateProductQuantityInCartItemDTO updateDto)
         {
-            var cartItem = await _context.CartItems.FirstOrDefaultAsync(ci => ci.CartId == updateDto.CartId && ci.ProductId == updateDto.ProductId);
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(ci => ci.UserId == updateDto.UserId && ci.ProductId == updateDto.ProductId);
             if (cartItem is null) return null;
             cartItem.Quantity = updateDto.Quantity;
             _context.CartItems.Update(cartItem);

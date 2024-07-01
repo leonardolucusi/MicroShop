@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Domain\Interfaces\" />
+    <Folder Include="Infrastructure\Mapping\" />
   </ItemGroup>
 
 </Project>

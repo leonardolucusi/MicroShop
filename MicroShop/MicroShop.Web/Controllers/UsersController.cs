@@ -4,8 +4,6 @@ using MicroShop.Web.Domain.Entities;
 using MicroShop.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 namespace MicroShop.Web.Controllers
 {
     public class UsersController : Controller

@@ -2,6 +2,7 @@
 using MicroShop.CartAPI.Application.Interfaces;
 using MicroShop.CartAPI.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+
 namespace MicroShop.CartAPI.Presentation.Controller
 {
     [ApiController]
@@ -20,7 +21,7 @@ namespace MicroShop.CartAPI.Presentation.Controller
         public async Task<IActionResult> AddOrRemoveProductToCart([FromBody] AddProductToCartDTO addProductToCartDTO)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var productAddedOrRemoved = await _cartService.AddOrRemoveProductToCartAsync(addProductToCartDTO.userId, addProductToCartDTO.productId);
+            var productAddedOrRemoved = await _cartService.AddOrRemoveCartItemAsync(addProductToCartDTO.UserId, addProductToCartDTO.ProductId);
             return Ok(productAddedOrRemoved);
         }
 
@@ -31,10 +32,10 @@ namespace MicroShop.CartAPI.Presentation.Controller
             return BadRequest();
         }
 
-        [HttpGet("{cartId}/cartItems")]
-        public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetAllCartItemsInCart(int cartId)
+        [HttpGet("{userId}/cartItems")]
+        public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetAllCartItemsInUser(int userId)
         {
-            return Ok(await _cartService.GetAllCartItems(cartId));
+            return Ok(await _cartService.GetAllCartItemsByUserId(userId));
         }
     }
 }

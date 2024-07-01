@@ -18,19 +18,17 @@ namespace MicroShop.Web.Controllers
         {
             var userId = GetUserIdFromJWT.GetUserIdFromToken(Request.Cookies["jwt"]);
 
-            var added = await _cartService.AddProductToCart(new AddProductToCartDTO { ProductId = productId, UserId = userId });
+            var result = await _cartService.AddProductToCart(new AddProductToCartDTO { ProductId = productId, UserId = userId});
 
-            if (added)
+            if (result)
             {
-                TempData[$"Product_{productId}"] = "added";
-                TempData["UserMessage"] = "Product added to cart successfully!";
+                TempData["UserMessage"] = "Product added in cart.";
                 TempData["MessageType"] = "success";
             }
             else
             {
-                TempData[$"Product_{productId}"] = "removed";
                 TempData["UserMessage"] = "Product removed from cart.";
-                TempData["MessageType"] = "danger";
+                TempData["MessageType"] = "error";
             }
 
             return RedirectToAction("Index", "Products");
