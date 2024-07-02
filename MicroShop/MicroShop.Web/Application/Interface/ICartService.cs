@@ -5,5 +5,6 @@ namespace MicroShop.Web.Application.Interface
     public interface ICartService
     {
         public Task<bool> AddProductToCart(AddProductToCartDTO addProductToCartDTO);
+        public Task<IEnumerable<CartItemDTO>> GetAllCartItemsInUserId(int userId);
     }
 }

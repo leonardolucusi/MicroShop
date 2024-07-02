@@ -24,7 +24,7 @@ namespace MicroShop.CartAPI.Application.Services
         {
             try
             {
-                var productAlreadyInCart = await  _cartRepository.CheckIfUserHasCartItemProduct(userId, productId);
+                var productAlreadyInCart = await _cartRepository.CheckIfUserHasCartItemProduct(userId, productId);
                 if (productAlreadyInCart)
                 {
                     await _cartRepository.RemoveCartItemProduct(userId, productId);
@@ -56,15 +56,26 @@ namespace MicroShop.CartAPI.Application.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao obter itens do carrinho para o usuário {userId}: {ex.Message}");
-                throw; 
+                throw;
             }
         }
-
         public async Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO)
         {
             try
             {
                 return await _cartRepository.UpdateCartItemQuantity(updateProductQuantityInCartItemDTO) is not null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao atualizar quantidade do item no carrinho: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> DeleteAllCartItemsByUserId(int userId) 
+        {
+            try
+            {
+                return await _cartRepository.DeleteAllCartItemsByUserId(userId);
             }
             catch (Exception ex)
             {

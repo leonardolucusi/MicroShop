@@ -1,6 +1,8 @@
 ﻿using MicroShop.ProductAPI.Domain.Entities;
 using MicroShop.ProductAPI.Domain.Repositories;
 using MicroShop.ProductAPI.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace MicroShop.ProductAPI.Infrastructure.Repositories
 {
     public class ProductRepository(Context context) : IProductRepository
@@ -13,6 +15,13 @@ namespace MicroShop.ProductAPI.Infrastructure.Repositories
         public async Task<Product> GetByIdAsync(Ulid id)
         {
             return await _context.Products.FindAsync(id);
+        }
+        public async Task<IEnumerable<Product>> GetProductsByIdsAsync(IEnumerable<string> productIds)
+        {
+            var ulidProductIds = productIds.Select(Ulid.Parse);
+            return await _context.Products
+                .Where(p => ulidProductIds.Contains(p.Id))
+                .ToListAsync();
         }
         public async Task AddAsync(Product product)
         {

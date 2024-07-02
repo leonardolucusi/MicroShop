@@ -11,10 +11,12 @@ namespace MicroShop.CartAPI.Presentation.Controller
     {
         private readonly ICartService _cartService;
         private readonly IMapper _mapper;
-        public CartsController(ICartService cartService, IMapper mapper)
+        private readonly ILogger<CartsController> _logger;
+        public CartsController(ICartService cartService, IMapper mapper, ILogger<CartsController> logger)
         {
             _cartService = cartService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -36,6 +38,28 @@ namespace MicroShop.CartAPI.Presentation.Controller
         public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetAllCartItemsInUser(int userId)
         {
             return Ok(await _cartService.GetAllCartItemsByUserId(userId));
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAllCartItemsByUserId(int userId)
+        {
+            try
+            {
+                bool result = await _cartService.DeleteAllCartItemsByUserId(userId);
+
+                if (result)
+                {
+                    return Ok(new { Message = "Todos os itens do carrinho foram deletados com sucesso." });
+                }
+                else
+                {
+                    return StatusCode(500, new { Message = "Erro ao deletar os itens do carrinho." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao deletar itens do carrinho para o usuário {userId}: {ex.Message}");
+                return StatusCode(500, new { Message = "Erro interno do servidor ao processar a solicitação." });
+            }
         }
     }
 }

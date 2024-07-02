@@ -4,6 +4,8 @@ using MicroShop.Web.Domain.DTOs.ProductDTOs;
 using MicroShop.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+
 namespace MicroShop.Web.Controllers
 {
     public class ProductsController : Controller
@@ -22,7 +24,13 @@ namespace MicroShop.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var userId = GetUserIdFromJWT.GetUserIdFromToken(Request.Cookies["jwt"]);
+            if (TokenManipulator.IsTokenExpired(Request.Cookies["jwt"]))
+            {
+                Response.Cookies.Delete("jwt");
+                return RedirectToAction("Index", "Products");
+            }
+            var userId = TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]);
+            
             HttpResponseMessage response = await _productApiClient.GetAsync("api/products");
 
             if (response.IsSuccessStatusCode)

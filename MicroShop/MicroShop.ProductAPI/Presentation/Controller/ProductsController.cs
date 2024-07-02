@@ -45,12 +45,25 @@ namespace MicroShop.ProductAPI.API.Controller
                 {
                     return NotFound();
                 }
-
                 return Ok(product);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("cart")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProductsByCartItemIds([FromQuery] IEnumerable<string> productIds)
+        {
+            try
+            {
+                return Ok(await _productService.GetAllProductsByIds(productIds));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return BadRequest(new { Message = "An error occurred while processing your request." });
             }
         }
 

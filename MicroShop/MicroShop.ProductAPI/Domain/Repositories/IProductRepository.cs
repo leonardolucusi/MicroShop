@@ -5,6 +5,7 @@ namespace MicroShop.ProductAPI.Domain.Repositories
     {
         Task<IQueryable<Product>> GetAllAsync();
         Task<Product> GetByIdAsync(Ulid id);
+        public Task<IEnumerable<Product>> GetProductsByIdsAsync(IEnumerable<string> productIds);
         Task AddAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(Ulid id);

@@ -65,7 +65,7 @@ namespace MicroShop.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<User>> UserEditPage()
         {
-            return View(await _userService.GetUserById(GetUserIdFromJWT.GetUserIdFromToken(Request.Cookies["jwt"])));
+            return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
         }
         [Authorize]
         [HttpPost]

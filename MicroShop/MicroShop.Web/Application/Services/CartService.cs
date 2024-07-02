@@ -21,8 +21,30 @@ namespace MicroShop.Web.Application.Services
                 var result = await response.Content.ReadAsStringAsync();
                 return bool.Parse(result);
             }
-
             return false;
+        }
+        public async Task<IEnumerable<CartItemDTO>> GetAllCartItemsInUserId(int userId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{BasePath}/{userId}/cartItems");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var cartItems = await response.Content.ReadFromJsonAsync<List<CartItemDTO>>();
+                    return cartItems ?? new List<CartItemDTO>();
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to fetch cart items for user ID {userId}. Status Code: {response.StatusCode}");
+                    return new List<CartItemDTO>();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while fetching cart items for user ID {userId}: {ex.Message}");
+                throw;
+            }
         }
     }
 }
