@@ -10,5 +10,6 @@ namespace MicroShop.CartAPI.Domain.Repositories
         public Task<bool> RemoveCartItemProduct(int userId, string productId);
         public Task<bool> CheckIfUserHasCartItemProduct(int userId, string productId);
         public Task<CartItem> UpdateCartItemQuantity(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO);
+        public Task<bool> DeleteAllCartItemsByUserId(int userId);
     }
 }

@@ -1,0 +1,37 @@
+﻿@using MicroShop.Web.Domain.DTOs.CartDTOs
+@model IEnumerable<CartProductDetailsDTO>
+
+@{
+    ViewData["Title"] = "Cart Items";
+}
+
+<h1>Cart Items</h1>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Product Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.ProductPrice</td>
+                    <td>@item.ProductQuantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No cart items found.</p>
+}

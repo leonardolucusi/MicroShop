@@ -6,6 +6,7 @@ namespace MicroShop.ProductAPI.Application.Interfaces
     {
         public Task<IQueryable<ProductDTO>> GetProductsAsync();
         public Task<ProductDTO> GetProductByIdAsync(Ulid id);
+        public Task<IEnumerable<ProductDTO>> GetAllProductsByIds(IEnumerable<string> productIds);
         public Task<ProductDTO> CreateProductAsync(CreateProductDTO productDto);
         public Task UpdateProductAsync(ProductDTO productDto);
         public Task DeleteProductAsync(Ulid id);

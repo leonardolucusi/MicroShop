@@ -3,6 +3,7 @@ using MicroShop.ProductAPI.Application.Interfaces;
 using MicroShop.ProductAPI.Domain.DTOs;
 using MicroShop.ProductAPI.Domain.Entities;
 using MicroShop.ProductAPI.Domain.Repositories;
+
 namespace MicroShop.ProductAPI.Application.Services
 {
     public class ProductService : IProductService
@@ -23,24 +24,24 @@ namespace MicroShop.ProductAPI.Application.Services
         {
             var product = await _productRepository.GetByIdAsync(id);
             if (product == null) return null;
-
             return _mapper.Map<ProductDTO>(product);
+        }
+        public async Task<IEnumerable<ProductDTO>> GetAllProductsByIds(IEnumerable<string> productIds)
+        {
+            return _mapper.Map<IEnumerable<ProductDTO>>(await _productRepository.GetProductsByIdsAsync(productIds));
         }
         public async Task<ProductDTO> CreateProductAsync(CreateProductDTO createProductDto)
         {
             var product = _mapper.Map<Product>(createProductDto);
             product.Id = Ulid.NewUlid();
             await _productRepository.AddAsync(product);
-
             return _mapper.Map<ProductDTO>(product);
         }
         public async Task UpdateProductAsync(ProductDTO productDto)
         {
             var product = await _productRepository.GetByIdAsync(productDto.Id);
             if (product == null) return;
-
             _mapper.Map(productDto, product);
-
             await _productRepository.UpdateAsync(product);
         }
         public async Task DeleteProductAsync(Ulid id)

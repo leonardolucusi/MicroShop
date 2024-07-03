@@ -1,5 +1,6 @@
 ﻿using MicroShop.Web.Application.Interface;
 using MicroShop.Web.Domain.DTOs.ProductDTOs;
+using System.Text.Json;
 
 namespace MicroShop.Web.Application.Services
 {
@@ -16,6 +17,41 @@ namespace MicroShop.Web.Application.Services
         {
             var response = await _httpClient.GetAsync($"{BasePath}/{id}");
             return await response.Content.ReadFromJsonAsync<ProductDTO>();
+        }
+        public async Task<IEnumerable<ProductDTO>> GetAllProductsByCartProductsIds(IEnumerable<string> productIds)
+        {
+            try
+            {
+                var queryString = string.Join("&", productIds.Select(id => $"productIds={Uri.EscapeDataString(id)}"));
+
+                var apiUrl = $"https://localhost:7037/api/products/cart?{queryString}";
+
+                var response = await _httpClient.GetAsync(apiUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var productsDto = JsonSerializer.Deserialize<IEnumerable<ProductDTO>>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (productsDto == null)
+                    {
+                        throw new Exception("Failed to deserialize products from response.");
+                    }
+
+                    return productsDto;
+                }
+                else
+                {
+                    throw new Exception($"Failed to retrieve products. Status code: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve products by cart item IDs.", ex);
+            }
         }
         public async Task<ProductDTO> CreateProduct(ProductDTO productDto)
         {
