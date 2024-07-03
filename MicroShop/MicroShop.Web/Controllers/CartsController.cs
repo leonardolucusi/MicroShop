@@ -34,20 +34,26 @@ namespace MicroShop.Web.Controllers
             }
             return RedirectToAction("Index", "Products");
         }
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> UpdateQuantityProductInCartItem(UpdateCartItemDTO updateCartItemDTO)
+        {
+            var product = await _productService.GetProductById(updateCartItemDTO.ProductId);
+            var stock = product.Stock;
+            var cartItemProduct = await _cartService.GetOneProductfromCartItemByUserIdProductId(updateCartItemDTO.UserId, updateCartItemDTO.ProductId);
+            if (cartItemProduct.Quantity >= stock) return BadRequest();
+
+            return Ok(await _cartService.UpdateOneProductInCartItemByUserIdProductId(updateCartItemDTO));
+        }
 
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CartProductDetailsDTO>>> GetAllCartItems()
         {
-            var userId = TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]);
-            var cartItems = await _cartService.GetAllCartItemsInUserId(userId);
+            var cartItems = await _cartService.GetAllCartItemsInUserId(
+                TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]));
             if (cartItems.Count() == 0) return View(new List<CartProductDetailsDTO>());
-            foreach (var item in cartItems)
-            {
-                await Console.Out.WriteLineAsync(item.ProductId);
-            };
             IEnumerable<string> productIds = cartItems.Select(ci => ci.ProductId);
-
             IEnumerable<ProductDTO> productsDto = await _productService.GetAllProductsByCartProductsIds(productIds);
             List<CartProductDetailsDTO> cartProductDetailsDTO = [];
 
@@ -57,7 +63,7 @@ namespace MicroShop.Web.Controllers
                 {
                     ProductId = item.Id,
                     ProductName = item.Name,
-                    ProductPrice = (decimal)item.Price
+                    ProductPrice = item.Price
                 });
             }
             foreach (var cartItem in cartItems)

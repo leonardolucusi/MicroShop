@@ -23,13 +23,11 @@ namespace MicroShop.Web.Utils
         {
             if (string.IsNullOrEmpty(token))
                 return false;
-
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
 
             if (jsonToken.ValidTo < DateTime.UtcNow)
                 return true;
-
             return false;
         }
     }

@@ -19,7 +19,18 @@ namespace MicroShop.CartAPI.Application.Services
             _mapper = mapper;
             _logger = logger;
         }
+        public async Task<CartItemDTO> GetOneCartItemByProductIdAndUserId(int userId, string productId)
+        {
+            try
+            {
+                return _mapper.Map<CartItemDTO>(await _cartRepository.GetCartItemByIdAndUserId(userId, productId));
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
         public async Task<bool> AddOrRemoveCartItemAsync(int userId, string productId)
         {
             try
@@ -50,7 +61,7 @@ namespace MicroShop.CartAPI.Application.Services
         {
             try
             {
-                var cartItemsDto = await _cartRepository.GetAllCartItems(userId);
+                var cartItemsDto = await _cartRepository.GetAllCartItemsByUserId(userId);
                 return _mapper.Map<IEnumerable<CartItemDTO>>(cartItemsDto);
             }
             catch (Exception ex)
@@ -59,11 +70,33 @@ namespace MicroShop.CartAPI.Application.Services
                 throw;
             }
         }
-        public async Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO)
+        public async Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO productDto)
         {
             try
             {
-                return await _cartRepository.UpdateCartItemQuantity(updateProductQuantityInCartItemDTO) is not null;
+                if (productDto.Quantity <= 0) return false;
+                if (productDto.Quantity > 1)
+                    return await _cartRepository.UpdateCartItemQuantity(productDto) is not null;
+                if (productDto.AddOrRemove is true && productDto.Quantity == 1)
+                {
+                    var cartItem = await _cartRepository.GetCartItemByIdAndUserId(productDto.UserId, productDto.ProductId);
+                    if (cartItem != null)
+                    {
+                        productDto.Quantity = cartItem.Quantity + 1;
+                        return await _cartRepository.UpdateCartItemQuantity(productDto) is not null;
+                    }
+                }
+                if (productDto.AddOrRemove is false && productDto.Quantity == 1)
+                {
+                    var cartItem = await _cartRepository.GetCartItemByIdAndUserId(productDto.UserId, productDto.ProductId);
+                    if (cartItem != null)
+                    {
+                        if (cartItem.Quantity == 1) return false;
+                        productDto.Quantity = cartItem.Quantity - 1;
+                        return await _cartRepository.UpdateCartItemQuantity(productDto) is not null;
+                    }
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -71,7 +104,7 @@ namespace MicroShop.CartAPI.Application.Services
                 return false;
             }
         }
-        public async Task<bool> DeleteAllCartItemsByUserId(int userId) 
+        public async Task<bool> DeleteAllCartItemsByUserId(int userId)
         {
             try
             {

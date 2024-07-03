@@ -12,6 +12,32 @@ namespace MicroShop.Web.Application.Services
         {
             _httpClient = httpClientFactory.CreateClient("CartAPI");
         }
+        /*
+         *  public int UserId { get; set; }
+            public string? ProductId { get; set; }
+            public int Quantity { get; set; }
+            public bool AddOrRemove { get; set; }
+        */
+        public async Task<CartItemDTO> UpdateOneProductInCartItemByUserIdProductId(UpdateCartItemDTO updateCartItemDTO)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"{BasePath}", updateCartItemDTO);
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<CartItemDTO>();
+                return result;
+            }
+            return new CartItemDTO { };
+        }
+        public async Task<CartItemDTO> GetOneProductfromCartItemByUserIdProductId(int userId, string productId)
+        {
+            var response = await _httpClient.GetAsync($"api/v1/carts/{userId}/{productId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<CartItemDTO>();
+                return result;
+            }
+            return new CartItemDTO { };
+        }
         public async Task<bool> AddProductToCart(AddProductToCartDTO addProductToCartDTO)
         {
             var response = await _httpClient.PostAsJsonAsync($"api/v1/carts", addProductToCartDTO);

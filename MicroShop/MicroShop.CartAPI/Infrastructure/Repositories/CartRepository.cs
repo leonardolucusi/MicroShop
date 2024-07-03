@@ -13,7 +13,7 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<CartItem>> GetAllCartItems(int userId)
+        public async Task<IEnumerable<CartItem>> GetAllCartItemsByUserId(int userId)
         {
             return await _context.CartItems.Where(ci => ci.UserId == userId).ToListAsync();
         }
@@ -21,6 +21,10 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
         {
             await _context.CartItems.AddAsync(cartItem);
             await _context.SaveChangesAsync();
+        }
+        public async Task<CartItem> GetCartItemByIdAndUserId(int userId, string productId)
+        {
+            return await _context.CartItems.FirstOrDefaultAsync(ci => ci.UserId == userId && ci.ProductId == productId);
         }
         public async Task<bool> CheckIfUserHasCartItemProduct(int userId, string productId)
         {

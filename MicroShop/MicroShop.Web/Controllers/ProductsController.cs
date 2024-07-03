@@ -4,7 +4,6 @@ using MicroShop.Web.Domain.DTOs.ProductDTOs;
 using MicroShop.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace MicroShop.Web.Controllers
 {
@@ -12,7 +11,6 @@ namespace MicroShop.Web.Controllers
     {
         private readonly HttpClient _productApiClient;
         private readonly HttpClient _cartApiClient;
-
         private readonly IProductService _productService;
         public ProductsController(IHttpClientFactory httpClientFactory, IProductService productService , IHttpClientFactory cartApiClient)
         {
@@ -30,9 +28,7 @@ namespace MicroShop.Web.Controllers
                 return RedirectToAction("Index", "Products");
             }
             var userId = TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]);
-            
             HttpResponseMessage response = await _productApiClient.GetAsync("api/products");
-
             if (response.IsSuccessStatusCode)
             {
                 List<ProductDTO> products = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
@@ -52,7 +48,6 @@ namespace MicroShop.Web.Controllers
             }
             return View("Error");
         }
-
         [Authorize]
         [HttpGet]
         public IActionResult ProductCreatePage()
