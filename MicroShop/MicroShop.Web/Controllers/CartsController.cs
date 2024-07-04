@@ -17,6 +17,38 @@ namespace MicroShop.Web.Controllers
             _productService = productService;
         }
         [Authorize]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CartProductDetailsDTO>>> GetAllCartItems()
+        {
+            var userId = TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]);
+            var cartItems = await _cartService.GetAllCartItemsInUserId(userId);
+            if (cartItems.Count() == 0) return View(new List<CartProductDetailsDTO>());
+            IEnumerable<string> productIds = cartItems.Select(ci => ci.ProductId);
+            IEnumerable<ProductDTO> productsDto = await _productService.GetAllProductsByCartProductsIds(productIds);
+            List<CartProductDetailsDTO> cartProductDetailsDTO = [];
+
+            foreach (var item in productsDto)
+            {
+                cartProductDetailsDTO.Add(new CartProductDetailsDTO
+                {
+                    UserId = userId,
+                    ProductId = item.Id,
+                    ProductName = item.Name,
+                    ProductPrice = item.Price
+                });
+            }
+            foreach (var cartItem in cartItems)
+            {
+                var cartProductDetail = cartProductDetailsDTO.FirstOrDefault(dto => dto.ProductId == cartItem.ProductId);
+
+                if (cartProductDetail != null)
+                {
+                    cartProductDetail.ProductQuantity = cartItem.Quantity;
+                }
+            }
+            return View(cartProductDetailsDTO);
+        }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddProductToCart(string productId)
         {
@@ -35,47 +67,32 @@ namespace MicroShop.Web.Controllers
             return RedirectToAction("Index", "Products");
         }
         [Authorize]
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> UpdateQuantityProductInCartItem(UpdateCartItemDTO updateCartItemDTO)
         {
+
             var product = await _productService.GetProductById(updateCartItemDTO.ProductId);
-            var stock = product.Stock;
             var cartItemProduct = await _cartService.GetOneProductfromCartItemByUserIdProductId(updateCartItemDTO.UserId, updateCartItemDTO.ProductId);
-            if (cartItemProduct.Quantity >= stock) return BadRequest();
-
-            return Ok(await _cartService.UpdateOneProductInCartItemByUserIdProductId(updateCartItemDTO));
+            if (updateCartItemDTO.AddOrRemove is true && cartItemProduct.Quantity >= product.Stock)
+            {
+                TempData["ErrorMessage"] = "Estoque chegou ao limite.";
+                return RedirectToAction("GetAllCartItems", "Carts");
+            }
+            if (updateCartItemDTO.AddOrRemove == false && cartItemProduct.Quantity == 1)
+            {
+                TempData["ErrorMessage"] = "Não pode ser zero)";
+                return RedirectToAction("GetAllCartItems", "Carts");
+            }
+            await _cartService.UpdateOneProductInCartItemByUserIdProductId(updateCartItemDTO);
+            return RedirectToAction("GetAllCartItems", "Carts");
         }
-
         [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CartProductDetailsDTO>>> GetAllCartItems()
+        [HttpPost]
+        public async Task<IActionResult> DeleteAllUserCartItemsByUserId() 
         {
-            var cartItems = await _cartService.GetAllCartItemsInUserId(
-                TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]));
-            if (cartItems.Count() == 0) return View(new List<CartProductDetailsDTO>());
-            IEnumerable<string> productIds = cartItems.Select(ci => ci.ProductId);
-            IEnumerable<ProductDTO> productsDto = await _productService.GetAllProductsByCartProductsIds(productIds);
-            List<CartProductDetailsDTO> cartProductDetailsDTO = [];
 
-            foreach (var item in productsDto)
-            {
-                cartProductDetailsDTO.Add(new CartProductDetailsDTO
-                {
-                    ProductId = item.Id,
-                    ProductName = item.Name,
-                    ProductPrice = item.Price
-                });
-            }
-            foreach (var cartItem in cartItems)
-            {
-                var cartProductDetail = cartProductDetailsDTO.FirstOrDefault(dto => dto.ProductId == cartItem.ProductId);
-
-                if (cartProductDetail != null)
-                {
-                    cartProductDetail.ProductQuantity = cartItem.Quantity;
-                }
-            }
-            return View(cartProductDetailsDTO);
+            await _cartService.DeleteAllUserCartItemsByUserId(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])); ;
+            return RedirectToAction("GetAllCartItems", "Carts");
         }
     }
 }

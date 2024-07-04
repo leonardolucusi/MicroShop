@@ -12,12 +12,6 @@ namespace MicroShop.Web.Application.Services
         {
             _httpClient = httpClientFactory.CreateClient("CartAPI");
         }
-        /*
-         *  public int UserId { get; set; }
-            public string? ProductId { get; set; }
-            public int Quantity { get; set; }
-            public bool AddOrRemove { get; set; }
-        */
         public async Task<CartItemDTO> UpdateOneProductInCartItemByUserIdProductId(UpdateCartItemDTO updateCartItemDTO)
         {
             var response = await _httpClient.PutAsJsonAsync($"{BasePath}", updateCartItemDTO);
@@ -69,6 +63,18 @@ namespace MicroShop.Web.Application.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while fetching cart items for user ID {userId}: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task DeleteAllUserCartItemsByUserId(int userId)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"{BasePath}/{userId}");
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

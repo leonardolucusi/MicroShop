@@ -7,6 +7,17 @@
 
 <h1>Cart Items</h1>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<form asp-action="DeleteAllUserCartItemsByUserId" asp-controller="Carts" method="post">
+    <button type="submit" class="btn btn-danger">Remove all products</button>
+</form>
+
 @if (Model.Any())
 {
     <table class="table">
@@ -25,7 +36,23 @@
                     <td>@item.ProductId</td>
                     <td>@item.ProductName</td>
                     <td>@item.ProductPrice</td>
-                    <td>@item.ProductQuantity</td>
+                    <td>
+                        <form asp-action="UpdateQuantityProductInCartItem" asp-controller="Carts" method="post" class="form-inline" style="display: inline-block;">
+                            <input type="hidden" name="UserId" value="@item.UserId" />
+                            <input type="hidden" name="ProductId" value="@item.ProductId" />
+                            <input type="hidden" name="Quantity" value="1" />
+                            <input type="hidden" name="AddOrRemove" value="false" />
+                            <button type="submit" class="btn btn-primary">-</button>
+                        </form>
+                        <label style="display: inline-block; width: 50px; text-align: center;">@item.ProductQuantity</label>
+                        <form asp-action="UpdateQuantityProductInCartItem" asp-controller="Carts" method="post" class="form-inline" style="display: inline-block;">
+                            <input type="hidden" name="UserId" value="@item.UserId" />
+                            <input type="hidden" name="ProductId" value="@item.ProductId" />
+                            <input type="hidden" name="Quantity" value="1" />
+                            <input type="hidden" name="AddOrRemove" value="true" />
+                            <button type="submit" class="btn btn-primary">+</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>

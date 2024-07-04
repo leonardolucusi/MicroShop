@@ -70,20 +70,19 @@ namespace MicroShop.CartAPI.Application.Services
                 throw;
             }
         }
-        public async Task<bool> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO productDto)
+        public async Task<CartItemDTO> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO productDto)
         {
             try
             {
-                if (productDto.Quantity <= 0) return false;
-                if (productDto.Quantity > 1)
-                    return await _cartRepository.UpdateCartItemQuantity(productDto) is not null;
+                if (productDto.Quantity <= 0) return null;
+
                 if (productDto.AddOrRemove is true && productDto.Quantity == 1)
                 {
                     var cartItem = await _cartRepository.GetCartItemByIdAndUserId(productDto.UserId, productDto.ProductId);
                     if (cartItem != null)
                     {
                         productDto.Quantity = cartItem.Quantity + 1;
-                        return await _cartRepository.UpdateCartItemQuantity(productDto) is not null;
+                        return _mapper.Map<CartItemDTO>(await _cartRepository.UpdateCartItemQuantity(productDto));
                     }
                 }
                 if (productDto.AddOrRemove is false && productDto.Quantity == 1)
@@ -91,17 +90,19 @@ namespace MicroShop.CartAPI.Application.Services
                     var cartItem = await _cartRepository.GetCartItemByIdAndUserId(productDto.UserId, productDto.ProductId);
                     if (cartItem != null)
                     {
-                        if (cartItem.Quantity == 1) return false;
+                        if (cartItem.Quantity == 1) return null;
                         productDto.Quantity = cartItem.Quantity - 1;
-                        return await _cartRepository.UpdateCartItemQuantity(productDto) is not null;
+                        return _mapper.Map<CartItemDTO>(await _cartRepository.UpdateCartItemQuantity(productDto));
                     }
                 }
-                return false;
+                if (productDto.Quantity > 1)
+                    return _mapper.Map<CartItemDTO>(await _cartRepository.UpdateCartItemQuantity(productDto));
+                return null;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao atualizar quantidade do item no carrinho: {ex.Message}");
-                return false;
+                return null;
             }
         }
         public async Task<bool> DeleteAllCartItemsByUserId(int userId)

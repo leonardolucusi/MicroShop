@@ -52,8 +52,7 @@ namespace MicroShop.CartAPI.Presentation.Controller
                 {
                     return BadRequest(ModelState);
                 }
-                var productAddedOrRemoved = await _cartService.AddOrRemoveCartItemAsync(addProductToCartDTO.UserId, addProductToCartDTO.ProductId);
-                return Ok(productAddedOrRemoved);
+                return Ok(await _cartService.AddOrRemoveCartItemAsync(addProductToCartDTO.UserId, addProductToCartDTO.ProductId));
             } 
             catch (Exception ex)
             {
@@ -62,23 +61,23 @@ namespace MicroShop.CartAPI.Presentation.Controller
             }
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateInCartItemProductQuantity([FromBody] UpdateProductQuantityInCartItemDTO updateDto)
+        public async Task<ActionResult<CartItemDTO>> UpdateInCartItemProductQuantity([FromBody] UpdateProductQuantityInCartItemDTO updateDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    return BadRequest(ModelState) ;
                 }
-                if (await _cartService.UpdateQuantityInCartItemProduct(updateDto)) return Ok(); 
-                return BadRequest(new { Message = "Não foi possível atualizar a quantidade do item no carrinho." });
+                return Ok(await _cartService.UpdateQuantityInCartItemProduct(updateDto));
+                
             }
             catch (Exception)
             {
                 throw;
             }
         }
-        [HttpDelete]
+        [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteAllCartItemsByUserId(int userId)
         {
             try

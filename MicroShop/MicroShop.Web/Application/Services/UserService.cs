@@ -47,7 +47,7 @@ namespace MicroShop.Web.Application.Services
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Username),
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(10),
+                Expires = DateTime.UtcNow.AddHours(1),
                 Audience = _configuration["Jwt:Audience"],
                 Issuer = _configuration["Jwt:Issuer"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
