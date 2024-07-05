@@ -56,22 +56,27 @@ namespace MicroShop.Web.Controllers
             {
                 return View("LoginPage", loginDto);
             }
-
-            var token = await _userService.AuthenticateAsync(loginDto);
-
-            if (token == null)
+            try
             {
-                ModelState.AddModelError("", "Invalid username or password.");
-                ViewData["ErrorMessage"] = "Invalid username or password.";
-                return View("LoginPage", loginDto);
+                var token = await _userService.AuthenticateAsync(loginDto);
+
+                if (token == null)
+                {
+                    ModelState.AddModelError("", "Invalid username or password.");
+                    ViewData["ErrorMessage"] = "Invalid username or password.";
+                    return View("LoginPage", loginDto);
+                }
+                Response.Cookies.Append("jwt", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                });
             }
-
-            Response.Cookies.Append("jwt", token, new CookieOptions
+            catch (Exception)
             {
-                HttpOnly = true,
-                Secure = true,
-            });
 
+                throw;
+            }
             return RedirectToAction("Index", "Home");
         }
 
@@ -86,18 +91,34 @@ namespace MicroShop.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<UserRegisterDTO>> UserEditPage()
         {
-            return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
+            try
+            {
+                return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> UserEdit(UserRegisterDTO userDto)
         {
-            var updatedUser = await _userService.UpdateUserAsync(userDto);
-            if (updatedUser != null)
+            try
             {
-                return RedirectToAction("UserEditPage", "Users");
+                var updatedUser = await _userService.UpdateUserAsync(userDto);
+                if (updatedUser != null)
+                {
+                    return RedirectToAction("UserEditPage", "Users");
+                }
+                return View(updatedUser);
             }
-            return View(updatedUser);
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
