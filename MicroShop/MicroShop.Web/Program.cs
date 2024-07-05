@@ -1,38 +1,19 @@
 using MicroShop.Web.Infrastructure.IoC;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddDependecyInjection(builder.Configuration);
-
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero
-    };
-});
-
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Services.ConfigureJwtAuthentication(builder.Configuration);
 var app = builder.Build();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
 app.Use(async (context, next) =>
 {
     var token = context.Request.Cookies["Jwt"];
@@ -42,17 +23,9 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
-app.UseRouting();
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 app.Run();

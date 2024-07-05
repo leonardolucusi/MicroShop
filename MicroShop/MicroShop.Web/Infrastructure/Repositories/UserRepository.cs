@@ -28,7 +28,7 @@ namespace MicroShop.Web.Infrastructure.Repositories
         public async Task<User> UserUpdateAsync(User user)
         {
             var existingUser = await _context.Users.FindAsync(user.Id);
-            if(existingUser != null)
+            if (existingUser != null)
             {
                 _context.Entry(existingUser).CurrentValues.SetValues(user);
                 await _context.SaveChangesAsync();

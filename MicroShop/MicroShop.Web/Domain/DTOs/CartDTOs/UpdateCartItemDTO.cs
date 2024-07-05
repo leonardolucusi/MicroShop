@@ -1,6 +1,6 @@
-﻿namespace MicroShop.CartAPI.Domain.DTOs
+﻿namespace MicroShop.Web.Domain.DTOs.CartDTOs
 {
-    public class UpdateProductQuantityInCartItemDTO
+    public class UpdateCartItemDTO
     {
         public int UserId { get; set; }
         public string? ProductId { get; set; }

@@ -6,7 +6,7 @@ namespace MicroShop.Web.Application
     {
         public Task<string> RegisterUserAsync(UserRegisterDTO registerDto);
         public Task<string> AuthenticateAsync(UserLoginDTO loginDto);
-        public Task<User> GetUserById(int id);
-        public Task<User> UpdateUserAsync(User user);
+        public Task<UserRegisterDTO> GetUserById(int id);
+        public Task<User> UpdateUserAsync(UserRegisterDTO user);
     }
 }

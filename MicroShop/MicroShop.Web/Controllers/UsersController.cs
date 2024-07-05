@@ -13,12 +13,12 @@ namespace MicroShop.Web.Controllers
         {
             _userService = userService;
         }
-
+        [AllowAnonymous]
         public IActionResult RegisterPage()
         {
             return View();
         }
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO registerDto)
         {
@@ -26,35 +26,61 @@ namespace MicroShop.Web.Controllers
             {
                 return View(registerDto);
             }
-            var result = await _userService.RegisterUserAsync(registerDto);
-            if (result == null)
+            try
             {
-                ModelState.AddModelError("", "Failed to register user.");
-                return View(registerDto);
+                var result = await _userService.RegisterUserAsync(registerDto);
+                if (result == null)
+                {
+                    ModelState.AddModelError("", "Failed to register user.");
+                    return View(registerDto);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             return RedirectToAction("LoginPage");
         }
+        [AllowAnonymous]
         public IActionResult LoginPage()
         {
-            return View();
+            var loginDto = new UserLoginDTO();
+            return View(loginDto);
         }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
         {
-            if (!ModelState.IsValid) return View(loginDto);
-            var token = await _userService.AuthenticateAsync(loginDto);
-            if (token == null)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Invalid username or password.");
-                return View(loginDto);
+                return View("LoginPage", loginDto);
             }
-            Response.Cookies.Append("jwt", token, new CookieOptions
+            try
             {
-                HttpOnly = true,
-                Secure = true,
-            });
+                var token = await _userService.AuthenticateAsync(loginDto);
+
+                if (token == null)
+                {
+                    ModelState.AddModelError("", "Invalid username or password.");
+                    ViewData["ErrorMessage"] = "Invalid username or password.";
+                    return View("LoginPage", loginDto);
+                }
+                Response.Cookies.Append("jwt", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             return RedirectToAction("Index", "Home");
         }
+
+
         [HttpPost]
         public IActionResult Logout()
         {
@@ -63,20 +89,36 @@ namespace MicroShop.Web.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<User>> UserEditPage()
+        public async Task<ActionResult<UserRegisterDTO>> UserEditPage()
         {
-            return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
+            try
+            {
+                return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> UserEdit(User user)
+        public async Task<IActionResult> UserEdit(UserRegisterDTO userDto)
         {
-            var updatedUser = await _userService.UpdateUserAsync(user);
-            if (updatedUser != null)
+            try
             {
-                return RedirectToAction("UserEditPage", "Users");
+                var updatedUser = await _userService.UpdateUserAsync(userDto);
+                if (updatedUser != null)
+                {
+                    return RedirectToAction("UserEditPage", "Users");
+                }
+                return View(updatedUser);
             }
-            return View(user);
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

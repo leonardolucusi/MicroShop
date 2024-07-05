@@ -18,28 +18,66 @@ namespace MicroShop.CartAPI.Presentation.Controller
             _mapper = mapper;
             _logger = logger;
         }
-
-        [HttpPost]
-        public async Task<IActionResult> AddOrRemoveProductToCart([FromBody] AddProductToCartDTO addProductToCartDTO)
+        [HttpGet("{userId}/{productId}")]
+        public async Task<ActionResult<CartItemDTO>> GetOneCartItemByUserIdAndProductId(int userId, string productId)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            var productAddedOrRemoved = await _cartService.AddOrRemoveCartItemAsync(addProductToCartDTO.UserId, addProductToCartDTO.ProductId);
-            return Ok(productAddedOrRemoved);
+            try
+            {
+                return await _cartService.GetOneCartItemByProductIdAndUserId(userId, productId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
-
-        [HttpPut]
-        public async Task<IActionResult> UpdateInCartItemProductQuantity([FromBody] UpdateProductQuantityInCartItemDTO updateDto)
-        {
-            if (await _cartService.UpdateQuantityInCartItemProduct(updateDto)) return Ok();
-            return BadRequest();
-        }
-
         [HttpGet("{userId}/cartItems")]
         public async Task<ActionResult<IEnumerable<CartItemDTO>>> GetAllCartItemsInUser(int userId)
         {
-            return Ok(await _cartService.GetAllCartItemsByUserId(userId));
+            try
+            {
+                return Ok(await _cartService.GetAllCartItemsByUserId(userId));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao obter todos os itens do carrinho para o usuário com ID {userId}");
+                throw;
+            }
         }
-        [HttpDelete]
+        [HttpPost]
+        public async Task<IActionResult> AddOrRemoveProductToCart([FromBody] AddProductToCartDTO addProductToCartDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                return Ok(await _cartService.AddOrRemoveCartItemAsync(addProductToCartDTO.UserId, addProductToCartDTO.ProductId));
+            } 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro ao adicionar ou remover produto do carrinho para o usuário com ID {addProductToCartDTO.UserId}");
+                return StatusCode(500, "Erro interno ao processar a solicitação");
+            }
+        }
+        [HttpPut]
+        public async Task<ActionResult<CartItemDTO>> UpdateInCartItemProductQuantity([FromBody] UpdateProductQuantityInCartItemDTO updateDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState) ;
+                }
+                return Ok(await _cartService.UpdateQuantityInCartItemProduct(updateDto));
+                
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteAllCartItemsByUserId(int userId)
         {
             try
@@ -50,15 +88,26 @@ namespace MicroShop.CartAPI.Presentation.Controller
                 {
                     return Ok(new { Message = "Todos os itens do carrinho foram deletados com sucesso." });
                 }
-                else
-                {
-                    return StatusCode(500, new { Message = "Erro ao deletar os itens do carrinho." });
-                }
+                return StatusCode(500, new { Message = "Erro ao deletar os itens do carrinho." });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro ao deletar itens do carrinho para o usuário {userId}: {ex.Message}");
                 return StatusCode(500, new { Message = "Erro interno do servidor ao processar a solicitação." });
+            }
+        }
+        [HttpDelete("{userId}/{productId}")]
+        public async Task<IActionResult> DeleteOneCartItem(int userId, string productId)
+        {
+            try
+            {
+                await _cartService.DeleteOneCartItemInUser(userId, productId);
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

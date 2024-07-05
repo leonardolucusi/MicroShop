@@ -4,7 +4,11 @@ namespace MicroShop.Web.Application.Interface
 {
     public interface ICartService
     {
+        public Task<CartItemDTO> GetOneProductfromCartItemByUserIdProductId(int userId, string productId);
+        public Task<CartItemDTO> UpdateOneProductInCartItemByUserIdProductId(UpdateCartItemDTO updateCartItemDTO);
         public Task<bool> AddProductToCart(AddProductToCartDTO addProductToCartDTO);
         public Task<IEnumerable<CartItemDTO>> GetAllCartItemsInUserId(int userId);
+        public Task DeleteAllUserCartItemsByUserId(int userId);
+        public Task DeleteOneCartItemInUser(int userId, string productId);
     }
 }
