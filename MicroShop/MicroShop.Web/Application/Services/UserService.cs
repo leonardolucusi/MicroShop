@@ -26,6 +26,7 @@ namespace MicroShop.Web.Application.Services
             if(usernameAlreadyExists is null)
             {
                 var user = _mapper.Map<User>(registerDto);
+                user.Role = "CLIENT";
                 await _userRepository.UserAddAsync(user);
                 return "Ok user created sucessfully";
             }

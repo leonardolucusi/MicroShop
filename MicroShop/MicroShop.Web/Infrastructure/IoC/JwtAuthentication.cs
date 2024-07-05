@@ -28,7 +28,8 @@ namespace MicroShop.Web.Infrastructure.IoC
                     {
                         context.Response.Cookies.Delete("Jwt");
                         if (!context.Request.Path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase) &&
-                            !context.Request.Path.Equals("/Users/LoginPage", StringComparison.OrdinalIgnoreCase))
+                            !context.Request.Path.Equals("/Users/LoginPage", StringComparison.OrdinalIgnoreCase) &&
+                            !context.Request.Path.Equals("/Users/RegisterPage", StringComparison.OrdinalIgnoreCase))
                         {
                             context.Response.Redirect("/Home/Index");
                         }
@@ -39,7 +40,8 @@ namespace MicroShop.Web.Infrastructure.IoC
                         context.Response.Cookies.Delete("Jwt");
                         if (!context.Response.HasStarted &&
                             !context.Request.Path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase) &&
-                            !context.Request.Path.Equals("/Users/LoginPage", StringComparison.OrdinalIgnoreCase))
+                            !context.Request.Path.Equals("/Users/LoginPage", StringComparison.OrdinalIgnoreCase) &&
+                            !context.Request.Path.Equals("/Users/RegisterPage", StringComparison.OrdinalIgnoreCase))
                         {
                             context.HandleResponse();
                             context.Response.Redirect("/Home/Index");
@@ -51,7 +53,8 @@ namespace MicroShop.Web.Infrastructure.IoC
                         context.Response.Cookies.Delete("Jwt");
                         if (!context.Response.HasStarted &&
                             !context.Request.Path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase) &&
-                            !context.Request.Path.Equals("/Users/LoginPage", StringComparison.OrdinalIgnoreCase))
+                            !context.Request.Path.Equals("/Users/LoginPage", StringComparison.OrdinalIgnoreCase) &&
+                            !context.Request.Path.Equals("/Users/RegisterPage", StringComparison.OrdinalIgnoreCase))
                         {
                             context.Response.Redirect("/Home/Index");
                         }
