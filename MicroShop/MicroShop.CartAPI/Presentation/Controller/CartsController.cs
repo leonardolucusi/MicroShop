@@ -96,5 +96,19 @@ namespace MicroShop.CartAPI.Presentation.Controller
                 return StatusCode(500, new { Message = "Erro interno do servidor ao processar a solicitação." });
             }
         }
+        [HttpDelete("{userId}/{productId}")]
+        public async Task<IActionResult> DeleteOneCartItem(int userId, string productId)
+        {
+            try
+            {
+                await _cartService.DeleteOneCartItemInUser(userId, productId);
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ using MicroShop.CartAPI.Application.Interfaces;
 using MicroShop.CartAPI.Domain.DTOs;
 using MicroShop.CartAPI.Domain.Entities;
 using MicroShop.CartAPI.Domain.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroShop.CartAPI.Application.Services
@@ -115,6 +116,19 @@ namespace MicroShop.CartAPI.Application.Services
             {
                 _logger.LogError(ex, $"Erro ao atualizar quantidade do item no carrinho: {ex.Message}");
                 return false;
+            }
+        }
+        public async Task DeleteOneCartItemInUser(int userId, string productId)
+        {
+            try
+            {
+                await _cartRepository.DeleteOneCartItemByUserIdProductId(userId, productId);
+  
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }

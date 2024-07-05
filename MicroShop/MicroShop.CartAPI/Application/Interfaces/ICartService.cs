@@ -9,5 +9,6 @@ namespace MicroShop.CartAPI.Application.Interfaces
         public Task<CartItemDTO> UpdateQuantityInCartItemProduct(UpdateProductQuantityInCartItemDTO updateProductQuantityInCartItemDTO);
         public Task<IEnumerable<CartItemDTO>> GetAllCartItemsByUserId(int userId);
         public Task<bool> DeleteAllCartItemsByUserId(int userId);
+        public Task DeleteOneCartItemInUser(int userId, string productId);
     }
 }

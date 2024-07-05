@@ -9,6 +9,10 @@ builder.Services.AddDependecyInjection(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -23,6 +27,37 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false,
         ClockSkew = TimeSpan.Zero
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            context.Response.Cookies.Delete("Jwt");
+            if (!context.Response.HasStarted)
+            {
+                context.Response.Redirect("/Home/Index");
+            }
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            context.Response.Cookies.Delete("Jwt");
+            if (!context.Response.HasStarted)
+            {
+                context.Response.Redirect("/Home/Index");
+            }
+            context.HandleResponse();
+            return Task.CompletedTask;
+        },
+        OnForbidden = context =>
+        {
+            context.Response.Cookies.Delete("Jwt");
+            if (!context.Response.HasStarted)
+            {
+                context.Response.Redirect("/Home/Index");
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 var app = builder.Build();
@@ -33,6 +68,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
 app.Use(async (context, next) =>
 {
     var token = context.Request.Cookies["Jwt"];
@@ -42,11 +82,6 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
-app.UseRouting();
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();

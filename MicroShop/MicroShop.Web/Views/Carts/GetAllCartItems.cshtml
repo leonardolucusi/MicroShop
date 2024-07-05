@@ -53,6 +53,12 @@
                             <button type="submit" class="btn btn-primary">+</button>
                         </form>
                     </td>
+                    <td>
+                        <form asp-action="DeleteOneCartItemInUser" asp-controller="Carts" method="post">
+                            <input type="hidden" name="ProductId" value="@item.ProductId" />
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>

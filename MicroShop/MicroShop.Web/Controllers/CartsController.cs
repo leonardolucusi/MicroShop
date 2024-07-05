@@ -94,5 +94,12 @@ namespace MicroShop.Web.Controllers
             await _cartService.DeleteAllUserCartItemsByUserId(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])); ;
             return RedirectToAction("GetAllCartItems", "Carts");
         }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> DeleteOneCartItemInUser(string productId)
+        {
+            await _cartService.DeleteOneCartItemInUser(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]), productId);
+            return RedirectToAction("GetAllCartItems", "Carts");
+        }
     }
 }

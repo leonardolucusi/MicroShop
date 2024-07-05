@@ -58,5 +58,11 @@ namespace MicroShop.CartAPI.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task DeleteOneCartItemByUserIdProductId(int userId, string productId)
+        {
+            var cartItem = await _context.CartItems.FirstOrDefaultAsync(ci => ci.UserId == userId && ci.ProductId == productId);
+            _context.CartItems.Remove(cartItem);
+            await _context.SaveChangesAsync();
+        }
     }
 }

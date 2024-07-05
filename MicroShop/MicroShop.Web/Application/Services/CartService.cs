@@ -1,5 +1,6 @@
 ﻿using MicroShop.Web.Application.Interface;
 using MicroShop.Web.Domain.DTOs.CartDTOs;
+using System.Reflection.Metadata.Ecma335;
 
 namespace MicroShop.Web.Application.Services
 {
@@ -71,6 +72,18 @@ namespace MicroShop.Web.Application.Services
             try
             {
                 var response = await _httpClient.DeleteAsync($"{BasePath}/{userId}");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public async Task DeleteOneCartItemInUser(int userId, string productId)
+        {
+            try
+            {
+                await _httpClient.DeleteAsync($"{BasePath}/{userId}/{productId}");
             }
             catch (Exception)
             {

@@ -9,5 +9,6 @@ namespace MicroShop.Web.Application.Interface
         public Task<bool> AddProductToCart(AddProductToCartDTO addProductToCartDTO);
         public Task<IEnumerable<CartItemDTO>> GetAllCartItemsInUserId(int userId);
         public Task DeleteAllUserCartItemsByUserId(int userId);
+        public Task DeleteOneCartItemInUser(int userId, string productId);
     }
 }
