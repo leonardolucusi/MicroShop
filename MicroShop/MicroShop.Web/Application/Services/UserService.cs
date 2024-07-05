@@ -22,9 +22,14 @@ namespace MicroShop.Web.Application.Services
         }
         public async Task<string> RegisterUserAsync(UserRegisterDTO registerDto)
         {
-            var user = _mapper.Map<User>(registerDto);
-            await _userRepository.UserAddAsync(user);
-            return "Ok User Created";
+            var usernameAlreadyExists = await _userRepository.FindUserByUsernameAsync(registerDto.Username);
+            if(usernameAlreadyExists is null)
+            {
+                var user = _mapper.Map<User>(registerDto);
+                await _userRepository.UserAddAsync(user);
+                return "Ok user created sucessfully";
+            }
+            return "User already exists";
         }
         public async Task<string> AuthenticateAsync(UserLoginDTO loginDto)
         {
@@ -48,7 +53,7 @@ namespace MicroShop.Web.Application.Services
                     new Claim(ClaimTypes.Name, user.Username),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(5),
+                Expires = DateTime.UtcNow.AddMinutes(5),
                 Audience = _configuration["Jwt:Audience"],
                 Issuer = _configuration["Jwt:Issuer"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -56,15 +61,14 @@ namespace MicroShop.Web.Application.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public async Task<User> GetUserById(int id)
+        public async Task<UserRegisterDTO> GetUserById(int id)
         {
             var user = await _userRepository.FindUserByIdAsync(id);
-            return user;
+            return _mapper.Map<UserRegisterDTO>(user);
         }
-        public async Task<User> UpdateUserAsync(User user) 
+        public async Task<User> UpdateUserAsync(UserRegisterDTO user) 
         {
-            await _userRepository.UserUpdateAsync(user);
-            return user;
+            return await _userRepository.UserUpdateAsync(_mapper.Map<User>(user));
         }
     }
 }

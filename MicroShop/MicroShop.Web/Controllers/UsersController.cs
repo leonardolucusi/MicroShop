@@ -26,19 +26,28 @@ namespace MicroShop.Web.Controllers
             {
                 return View(registerDto);
             }
-            var result = await _userService.RegisterUserAsync(registerDto);
-            if (result == null)
+            try
             {
-                ModelState.AddModelError("", "Failed to register user.");
-                return View(registerDto);
+                var result = await _userService.RegisterUserAsync(registerDto);
+                if (result == null)
+                {
+                    ModelState.AddModelError("", "Failed to register user.");
+                    return View(registerDto);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
             }
             return RedirectToAction("LoginPage");
         }
         [AllowAnonymous]
         public IActionResult LoginPage()
         {
-            return View();
+            var loginDto = new UserLoginDTO();
+            return View(loginDto);
         }
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
@@ -53,7 +62,8 @@ namespace MicroShop.Web.Controllers
             if (token == null)
             {
                 ModelState.AddModelError("", "Invalid username or password.");
-                return View("LoginPage", loginDto); 
+                ViewData["ErrorMessage"] = "Invalid username or password.";
+                return View("LoginPage", loginDto);
             }
 
             Response.Cookies.Append("jwt", token, new CookieOptions
@@ -64,6 +74,8 @@ namespace MicroShop.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+
         [HttpPost]
         public IActionResult Logout()
         {
@@ -72,20 +84,20 @@ namespace MicroShop.Web.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<User>> UserEditPage()
+        public async Task<ActionResult<UserRegisterDTO>> UserEditPage()
         {
             return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> UserEdit(User user)
+        public async Task<IActionResult> UserEdit(UserRegisterDTO userDto)
         {
-            var updatedUser = await _userService.UpdateUserAsync(user);
+            var updatedUser = await _userService.UpdateUserAsync(userDto);
             if (updatedUser != null)
             {
                 return RedirectToAction("UserEditPage", "Users");
             }
-            return View(user);
+            return View(updatedUser);
         }
     }
 }
