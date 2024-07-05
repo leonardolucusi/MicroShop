@@ -9,7 +9,6 @@
         <input asp-for="Username" class="form-control" />
         <span asp-validation-for="Username" class="text-danger"></span>
     </div>
-
     <div>
         <label asp-for="Password">Password:</label>
         <input asp-for="Password" class="form-control" />
@@ -17,6 +16,9 @@
     </div>
     <input type="submit" value="Login" class="btn btn-success" />
 </form>
+@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+}
 <br />
 <a class="btn btn-success" asp-controller="Users" asp-action="RegisterPage">Register</a>
-

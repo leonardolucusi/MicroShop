@@ -43,18 +43,25 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
         {
-            if (!ModelState.IsValid) return View(loginDto);
+            if (!ModelState.IsValid)
+            {
+                return View("LoginPage", loginDto);
+            }
+
             var token = await _userService.AuthenticateAsync(loginDto);
+
             if (token == null)
             {
                 ModelState.AddModelError("", "Invalid username or password.");
-                return View(loginDto);
+                return View("LoginPage", loginDto); 
             }
+
             Response.Cookies.Append("jwt", token, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
             });
+
             return RedirectToAction("Index", "Home");
         }
         [HttpPost]
