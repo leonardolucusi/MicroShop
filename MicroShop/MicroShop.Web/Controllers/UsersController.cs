@@ -13,12 +13,12 @@ namespace MicroShop.Web.Controllers
         {
             _userService = userService;
         }
-
+        [AllowAnonymous]
         public IActionResult RegisterPage()
         {
             return View();
         }
-
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO registerDto)
         {
@@ -34,10 +34,12 @@ namespace MicroShop.Web.Controllers
             }
             return RedirectToAction("LoginPage");
         }
+        [AllowAnonymous]
         public IActionResult LoginPage()
         {
             return View();
         }
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
         {

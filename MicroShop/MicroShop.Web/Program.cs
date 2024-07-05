@@ -9,7 +9,6 @@ builder.Services.AddDependecyInjection(builder.Configuration);
 
 builder.Services.AddControllersWithViews();
 
-
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -32,7 +31,7 @@ builder.Services.AddAuthentication(options =>
         OnAuthenticationFailed = context =>
         {
             context.Response.Cookies.Delete("Jwt");
-            if (!context.Response.HasStarted)
+            if (!context.Request.Path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase))
             {
                 context.Response.Redirect("/Home/Index");
             }
@@ -41,17 +40,17 @@ builder.Services.AddAuthentication(options =>
         OnChallenge = context =>
         {
             context.Response.Cookies.Delete("Jwt");
-            if (!context.Response.HasStarted)
+            if (!context.Response.HasStarted && !context.Request.Path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase))
             {
+                context.HandleResponse();
                 context.Response.Redirect("/Home/Index");
             }
-            context.HandleResponse();
             return Task.CompletedTask;
         },
         OnForbidden = context =>
         {
             context.Response.Cookies.Delete("Jwt");
-            if (!context.Response.HasStarted)
+            if (!context.Response.HasStarted && !context.Request.Path.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase))
             {
                 context.Response.Redirect("/Home/Index");
             }

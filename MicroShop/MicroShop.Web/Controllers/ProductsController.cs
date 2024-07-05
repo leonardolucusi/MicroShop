@@ -48,13 +48,13 @@ namespace MicroShop.Web.Controllers
             }
             return View("Error");
         }
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public IActionResult ProductCreatePage()
         {
             return View();
         }
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> ProductCreate(ProductDTO productDto)
         {
@@ -65,14 +65,14 @@ namespace MicroShop.Web.Controllers
             }
             return View(productDto);
         }
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> ProductUpdatePage(string id)
         {
             var product = await _productService.GetProductById(id);
             return View(product);
         }
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductDTO productDto)
         {
@@ -84,7 +84,7 @@ namespace MicroShop.Web.Controllers
             }
             return View(productDto);
         }
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> ProductDeletePage(string id)
         {
@@ -92,7 +92,7 @@ namespace MicroShop.Web.Controllers
             return View(product);
 
         }
-        [Authorize]
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<ActionResult> ProductDelete(string id)
         {
