@@ -24,21 +24,25 @@ namespace MicroShop.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(registerDto);
+                return View("RegisterPage", registerDto);
             }
-            try
+
+            var result = await _userService.RegisterUserAsync(registerDto);
+
+            if (result == "Username already exists.")
             {
-                var result = await _userService.RegisterUserAsync(registerDto);
-                if (result == null)
-                {
-                    ModelState.AddModelError("", "Failed to register user.");
-                    return View(registerDto);
-                }
+                ModelState.AddModelError("", result);
+                ViewData["ErrorMessage"] = result; 
+                return View("RegisterPage", registerDto);
             }
-            catch (InvalidOperationException ex)
+
+            if (result != "User created successfully.")
             {
-                return BadRequest(ex.Message);
+                ModelState.AddModelError("", "An error occurred while registering the user.");
+                ViewData["ErrorMessage"] = "An error occurred while registering the user."; 
+                return View("RegisterPage", registerDto);
             }
+
             return RedirectToAction("LoginPage");
         }
         [AllowAnonymous]

@@ -23,14 +23,11 @@ namespace MicroShop.Web.Application.Services
         public async Task<string> RegisterUserAsync(UserRegisterDTO registerDto)
         {
             var usernameAlreadyExists = await _userRepository.FindUserByUsernameAsync(registerDto.Username);
-            if(usernameAlreadyExists is null)
-            {
-                var user = _mapper.Map<User>(registerDto);
-                user.Role = "CLIENT";
-                await _userRepository.UserAddAsync(user);
-                return "Ok user created sucessfully";
-            }
-            return "User already exists";
+            if (usernameAlreadyExists != null) return "Username already exists.";
+            var user = _mapper.Map<User>(registerDto);
+            user.Role = "CLIENT";
+            await _userRepository.UserAddAsync(user);
+            return "User created successfully.";
         }
         public async Task<string> AuthenticateAsync(UserLoginDTO loginDto)
         {
@@ -44,6 +41,10 @@ namespace MicroShop.Web.Application.Services
         }
         private string GenerateJwtToken(User user)
         {
+            if (string.IsNullOrEmpty(user.Role))
+            {
+                throw new ArgumentNullException(nameof(user.Role), "User's role cannot be null or empty.");
+            }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -69,7 +70,9 @@ namespace MicroShop.Web.Application.Services
         }
         public async Task<User> UpdateUserAsync(UserRegisterDTO user) 
         {
-            return await _userRepository.UserUpdateAsync(_mapper.Map<User>(user));
+            var userToBeUpdated = _mapper.Map<User>(user);
+            userToBeUpdated.Role = "CLIENT";
+            return await _userRepository.UserUpdateAsync(userToBeUpdated);
         }
     }
 }
