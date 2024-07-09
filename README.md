@@ -1,6 +1,6 @@
 # MicroShop
 
-MicroShop é uma aplicação web desenvolvida em ASP.NET Core utilizando arquitetura de microsserviços. O projeto visa criar uma plataforma de comércio eletrônico escalável e modularizada, oferecendo funcionalidades de gerenciamento de produtos, autenticação JWT para usuários e controle de acesso baseado em papéis (roles).
+MicroShop is a web application developed in ASP.NET Core using a microservices architecture. The project aims to create a scalable and modularized e-commerce platform, offering functionalities for product management, JWT authentication for users, and role-based access control.
 
 ## Register
 ![RegisterPage](https://github.com/leonardolucusi/MicroShop/assets/61367434/aaae20e8-416f-4178-a8b7-6deeaf4cd419)
@@ -22,42 +22,42 @@ MicroShop é uma aplicação web desenvolvida em ASP.NET Core utilizando arquite
 ![EstoqueNoMaximo](https://github.com/leonardolucusi/MicroShop/assets/61367434/caf2d259-c47d-4449-9e8b-21bedb331a97)
 ![cartAPI](https://github.com/leonardolucusi/MicroShop/assets/61367434/9772559e-9fbe-44e9-9542-697ce52704a1)
 
-## Arquitetura de Microsserviços
+## Microservices Architecture
 
 O MicroShop adota uma arquitetura de microsserviços para promover a separação de preocupações e a escalabilidade. Cada microsserviço é responsável por uma parte específica da funcionalidade da aplicação, permitindo um desenvolvimento e implantação independentes.
 
-## Funcionalidades Principais
+## Key Features
 
-- **Gerenciamento de Produtos**: Capacidade de adicionar, visualizar, atualizar e excluir produtos.
-- **Autenticação JWT**: Login seguro para usuários com tokens JWT para autenticação e autorização.
-- **Controle de Acesso Baseado em Papéis**: Definição de papéis (roles) como 'ADMIN' e 'CLIENT' para acesso diferenciado a recursos da aplicação.
-- 
-## Tecnologias Utilizadas
+- **Product Management**: Ability to add, view, update, and delete products.
+- **JWT Authentication**: Secure user login with JWT tokens for authentication and authorization.
+- **Role-Based Access Control**: Definition of roles such as 'ADMIN' and 'CLIENT' for differentiated access to application resources.
 
-- **ASP.NET Core**: Framework utilizado para o desenvolvimento backend da aplicação.
-- **JWT**: Utilizado para autenticação segura entre microsserviços e com os clientes da aplicação.
-- **Entity Framework Core**: Framework ORM para interação com banco de dados.
-- **Swagger**: Documentação e teste de APIs.
-- **AutoMapper**: Mapeamento de objetos entre camadas da aplicação.
-- 
-## Pré-requisitos
+## Technologies Used
+
+- **ASP.NET Core**: Backend framework for application development.
+- **JWT**: Used for secure authentication between microservices and application clients.
+- **Entity Framework Core**: ORM framework for interacting with databases.
+- **Swagger**: API documentation and testing.
+- **AutoMapper**: Object mapping between application layers.
+
+## Prerequisites
 
 - .NET Core 8 SDK
 - SQL Server
-- Visual Studio ou qualquer IDE compatível com .NET
+- Visual Studio or any IDE compatible with .NET
 
-## Instalação e Uso
+## Installation and Usage
 
-Para executar o MicroShop localmente, siga os passos abaixo:
+To run MicroShop locally, follow these steps:
 
-1. Clone este repositório.
-2. Configure as conexões de banco de dados e chaves JWT no arquivo `appsettings.json`.
-3. Execute o projeto utilizando o Visual Studio ou o CLI do .NET.
+1. Clone this repository.
+2. Configure database connections and JWT keys in the `appsettings.json` file.
+3. Run the project using Visual Studio or the .NET CLI.
 
 ```bash
 dotnet run
 ```
-4. Acesse a aplicação em http://localhost:5000 (ou outra porta configurada).
+4. Access the application at http://localhost:5000 (or another configured port).
 
-## Contribuição
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request com melhorias ou novas funcionalidades para o MicroShop.
+## Contribution
+Contributions are welcome! Feel free to open an issue or pull request with improvements or new features for MicroShop.
