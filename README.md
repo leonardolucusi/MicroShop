@@ -32,5 +32,6 @@ Para executar o MicroShop localmente, siga os passos abaixo:
 dotnet run
 ```
 4. Acesse a aplicação em http://localhost:5000 (ou outra porta configurada).
-Contribuição
+
+## Contribuição
 Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request com melhorias ou novas funcionalidades para o MicroShop.
