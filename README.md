@@ -8,7 +8,6 @@ MicroShop é uma aplicação web desenvolvida em ASP.NET Core utilizando arquite
 ![LoginPage](https://github.com/leonardolucusi/MicroShop/assets/61367434/ee23f91c-c5cc-4eab-acce-104da495599d)
 ## Edit User
 ![EditUserInfo](https://github.com/leonardolucusi/MicroShop/assets/61367434/43086630-7546-433d-b2a9-586799e5a3d8)
-![EditProductAdminView](https://github.com/leonardolucusi/MicroShop/assets/61367434/8ff59c98-24f7-4a2e-aafa-a899191f7f9e)
 ## User Product View
 ![UserProductView](https://github.com/leonardolucusi/MicroShop/assets/61367434/a86397c8-de7e-4c33-8bc8-85b51d42aeb9)
 ![ProductAddedToCart](https://github.com/leonardolucusi/MicroShop/assets/61367434/fbbbaa39-aa32-4cd8-a1a9-3f12b4f7c801)
@@ -16,8 +15,9 @@ MicroShop é uma aplicação web desenvolvida em ASP.NET Core utilizando arquite
 ![ProductAPI](https://github.com/leonardolucusi/MicroShop/assets/61367434/96042733-a5d2-4ff7-bfbc-e44dca74619e)
 ## Admin Product View
 ![AdminProductView](https://github.com/leonardolucusi/MicroShop/assets/61367434/eda08dac-6062-432b-be5c-a7919cfe3a56)
-![AdminViewDeleteProduct](https://github.com/leonardolucusi/MicroShop/assets/61367434/89f5167e-17e2-4f88-a6cb-0fa3c269ba7b)
 ![AdminViewCreateProduct](https://github.com/leonardolucusi/MicroShop/assets/61367434/61067597-44f8-460f-b134-88efbf252837)
+![EditProductAdminView](https://github.com/leonardolucusi/MicroShop/assets/61367434/8ff59c98-24f7-4a2e-aafa-a899191f7f9e)
+![AdminViewDeleteProduct](https://github.com/leonardolucusi/MicroShop/assets/61367434/89f5167e-17e2-4f88-a6cb-0fa3c269ba7b)
 ## Cart
 ![EstoqueNoMaximo](https://github.com/leonardolucusi/MicroShop/assets/61367434/caf2d259-c47d-4449-9e8b-21bedb331a97)
 ![cartAPI](https://github.com/leonardolucusi/MicroShop/assets/61367434/9772559e-9fbe-44e9-9542-697ce52704a1)
