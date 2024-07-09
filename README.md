@@ -24,7 +24,7 @@ MicroShop is a web application developed in ASP.NET Core using a microservices a
 
 ## Microservices Architecture
 
-O MicroShop adota uma arquitetura de microsserviços para promover a separação de preocupações e a escalabilidade. Cada microsserviço é responsável por uma parte específica da funcionalidade da aplicação, permitindo um desenvolvimento e implantação independentes.
+MicroShop adopts a microservices architecture to promote separation of concerns and scalability. Each microservice is responsible for specific parts of the application's functionality, allowing independent development and deployment.
 
 ## Key Features
 
