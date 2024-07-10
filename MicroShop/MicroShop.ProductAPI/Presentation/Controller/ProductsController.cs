@@ -9,10 +9,12 @@ namespace MicroShop.ProductAPI.API.Controller
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
         {
             _productService = productService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -25,7 +27,8 @@ namespace MicroShop.ProductAPI.API.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
 
@@ -49,7 +52,8 @@ namespace MicroShop.ProductAPI.API.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
 
@@ -62,8 +66,8 @@ namespace MicroShop.ProductAPI.API.Controller
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return BadRequest(new { Message = "An error occurred while processing your request." });
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
 
@@ -82,7 +86,8 @@ namespace MicroShop.ProductAPI.API.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
 
@@ -109,7 +114,8 @@ namespace MicroShop.ProductAPI.API.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
 
@@ -128,7 +134,8 @@ namespace MicroShop.ProductAPI.API.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
     }

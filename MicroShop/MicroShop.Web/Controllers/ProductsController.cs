@@ -12,41 +12,51 @@ namespace MicroShop.Web.Controllers
         private readonly HttpClient _productApiClient;
         private readonly HttpClient _cartApiClient;
         private readonly IProductService _productService;
-        public ProductsController(IHttpClientFactory httpClientFactory, IProductService productService , IHttpClientFactory cartApiClient)
+        private readonly ILogger<ProductsController> _logger;
+        public ProductsController(IHttpClientFactory httpClientFactory, IProductService productService, IHttpClientFactory cartApiClient, ILogger<ProductsController> logger)
         {
             _productApiClient = httpClientFactory.CreateClient("ProductAPI");
             _cartApiClient = httpClientFactory.CreateClient("CartAPI");
             _productService = productService;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            if (TokenManipulator.IsTokenExpired(Request.Cookies["jwt"]))
+            try
             {
-                Response.Cookies.Delete("jwt");
-                return RedirectToAction("Index", "Products");
-            }
-            var userId = TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]);
-            HttpResponseMessage response = await _productApiClient.GetAsync("api/products");
-            if (response.IsSuccessStatusCode)
-            {
-                List<ProductDTO> products = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
-
-                HttpResponseMessage cartResponse = await _cartApiClient.GetAsync($"api/v1/carts/{userId}/cartItems");
-
-                if (cartResponse.IsSuccessStatusCode)
+                if (TokenManipulator.IsTokenExpired(Request.Cookies["jwt"]))
                 {
-                    List<CartItemDTO> cartItems = await cartResponse.Content.ReadFromJsonAsync<List<CartItemDTO>>();
-
-                    foreach (var product in products)
-                    {
-                        product.IsInCart = cartItems.Any(ci => ci.ProductId == product.Id);
-                    }
+                    Response.Cookies.Delete("jwt");
+                    return RedirectToAction("Index", "Products");
                 }
-                return View(products);
+                var userId = TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"]);
+                HttpResponseMessage response = await _productApiClient.GetAsync("api/products");
+                if (response.IsSuccessStatusCode)
+                {
+                    List<ProductDTO> products = await response.Content.ReadFromJsonAsync<List<ProductDTO>>();
+
+                    HttpResponseMessage cartResponse = await _cartApiClient.GetAsync($"api/v1/carts/{userId}/cartItems");
+
+                    if (cartResponse.IsSuccessStatusCode)
+                    {
+                        List<CartItemDTO> cartItems = await cartResponse.Content.ReadFromJsonAsync<List<CartItemDTO>>();
+
+                        foreach (var product in products)
+                        {
+                            product.IsInCart = cartItems.Any(ci => ci.ProductId == product.Id);
+                        }
+                    }
+                    return View(products);
+                }
+                return View("Error");
             }
-            return View("Error");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
+            }
         }
         [Authorize(Roles = "ADMIN")]
         [HttpGet]
@@ -58,47 +68,86 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductCreate(ProductDTO productDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _productService.CreateProduct(productDto);
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    await _productService.CreateProduct(productDto);
+                    return RedirectToAction("Index");
+                }
+                return View(productDto);
             }
-            return View(productDto);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
+            }
         }
         [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> ProductUpdatePage(string id)
         {
-            var product = await _productService.GetProductById(id);
-            return View(product);
+            try
+            {
+                var product = await _productService.GetProductById(id);
+                return View(product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
+            }
         }
         [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductDTO productDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var response = await _productService.UpdateProduct(productDto);
-                if (response != null) return RedirectToAction(
-                    nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var response = await _productService.UpdateProduct(productDto);
+                    if (response != null) return RedirectToAction(
+                        nameof(Index));
+                }
+                return View(productDto);
             }
-            return View(productDto);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
+            }
         }
         [Authorize(Roles = "ADMIN")]
         [HttpGet]
         public async Task<IActionResult> ProductDeletePage(string id)
         {
-            var product = await _productService.GetProductById(id);
-            return View(product);
-
+            try
+            {
+                var product = await _productService.GetProductById(id);
+                return View(product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
+            }
         }
         [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public async Task<ActionResult> ProductDelete(string id)
         {
-            var response = await _productService.DeleteProductAsync(id);
-            if (response) return RedirectToAction(nameof(Index));
-            return View(response);
+            try
+            {
+                var response = await _productService.DeleteProductAsync(id);
+                if (response) return RedirectToAction(nameof(Index));
+                return View(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
+            }
         }
     }
 }

@@ -9,9 +9,11 @@ namespace MicroShop.Web.Controllers
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
         [AllowAnonymous]
         public IActionResult RegisterPage()
@@ -22,28 +24,36 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterDTO registerDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View("RegisterPage", registerDto);
+                if (!ModelState.IsValid)
+                {
+                    return View("RegisterPage", registerDto);
+                }
+
+                var result = await _userService.RegisterUserAsync(registerDto);
+
+                if (result == "Username already exists.")
+                {
+                    ModelState.AddModelError("", result);
+                    ViewData["ErrorMessage"] = result;
+                    return View("RegisterPage", registerDto);
+                }
+
+                if (result != "User created successfully.")
+                {
+                    ModelState.AddModelError("", "An error occurred while registering the user.");
+                    ViewData["ErrorMessage"] = "An error occurred while registering the user.";
+                    return View("RegisterPage", registerDto);
+                }
+
+                return RedirectToAction("LoginPage");
             }
-
-            var result = await _userService.RegisterUserAsync(registerDto);
-
-            if (result == "Username already exists.")
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", result);
-                ViewData["ErrorMessage"] = result; 
-                return View("RegisterPage", registerDto);
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
-
-            if (result != "User created successfully.")
-            {
-                ModelState.AddModelError("", "An error occurred while registering the user.");
-                ViewData["ErrorMessage"] = "An error occurred while registering the user."; 
-                return View("RegisterPage", registerDto);
-            }
-
-            return RedirectToAction("LoginPage");
         }
         [AllowAnonymous]
         public IActionResult LoginPage()
@@ -56,35 +66,41 @@ namespace MicroShop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginDTO loginDto)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("LoginPage", loginDto);
-            }
             try
             {
-                var token = await _userService.AuthenticateAsync(loginDto);
-
-                if (token == null)
+                if (!ModelState.IsValid)
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
-                    ViewData["ErrorMessage"] = "Invalid username or password.";
                     return View("LoginPage", loginDto);
                 }
-                Response.Cookies.Append("jwt", token, new CookieOptions
+                try
                 {
-                    HttpOnly = true,
-                    Secure = true,
-                });
+                    var token = await _userService.AuthenticateAsync(loginDto);
+
+                    if (token == null)
+                    {
+                        ModelState.AddModelError("", "Invalid username or password.");
+                        ViewData["ErrorMessage"] = "Invalid username or password.";
+                        return View("LoginPage", loginDto);
+                    }
+                    Response.Cookies.Append("jwt", token, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                    });
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                return RedirectToAction("Index", "Home");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
-            return RedirectToAction("Index", "Home");
         }
-
-
         [HttpPost]
         public IActionResult Logout()
         {
@@ -99,10 +115,10 @@ namespace MicroShop.Web.Controllers
             {
                 return View(await _userService.GetUserById(TokenManipulator.GetUserIdFromToken(Request.Cookies["jwt"])));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
         [Authorize]
@@ -118,10 +134,10 @@ namespace MicroShop.Web.Controllers
                 }
                 return View(updatedUser);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
     }

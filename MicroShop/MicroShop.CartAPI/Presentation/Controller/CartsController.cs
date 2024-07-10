@@ -25,9 +25,10 @@ namespace MicroShop.CartAPI.Presentation.Controller
             {
                 return await _cartService.GetOneCartItemByProductIdAndUserId(userId, productId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
         [HttpGet("{userId}/cartItems")]
@@ -39,8 +40,8 @@ namespace MicroShop.CartAPI.Presentation.Controller
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao obter todos os itens do carrinho para o usuário com ID {userId}");
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
         [HttpPost]
@@ -53,11 +54,11 @@ namespace MicroShop.CartAPI.Presentation.Controller
                     return BadRequest(ModelState);
                 }
                 return Ok(await _cartService.AddOrRemoveCartItemAsync(addProductToCartDTO.UserId, addProductToCartDTO.ProductId));
-            } 
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao adicionar ou remover produto do carrinho para o usuário com ID {addProductToCartDTO.UserId}");
-                return StatusCode(500, "Erro interno ao processar a solicitação");
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
         [HttpPut]
@@ -72,9 +73,10 @@ namespace MicroShop.CartAPI.Presentation.Controller
                 return Ok(await _cartService.UpdateQuantityInCartItemProduct(updateDto));
                 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
         [HttpDelete("{userId}")]
@@ -92,8 +94,8 @@ namespace MicroShop.CartAPI.Presentation.Controller
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao deletar itens do carrinho para o usuário {userId}: {ex.Message}");
-                return StatusCode(500, new { Message = "Erro interno do servidor ao processar a solicitação." });
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
         [HttpDelete("{userId}/{productId}")]
@@ -104,10 +106,10 @@ namespace MicroShop.CartAPI.Presentation.Controller
                 await _cartService.DeleteOneCartItemInUser(userId, productId);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _logger.LogError(ex, "Unexpected error occurred");
+                return StatusCode(500, new { message = "Unexpected error occurred" });
             }
         }
     }
